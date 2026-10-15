@@ -269,6 +269,19 @@ export const ESPADEL_CLUB_PLAYERS: Player[] = [
     clubMemberNumber: 'ESPADEL-1042',
     levelCertifiedByClub: true,
     coachNotes: 'Nivel validado por el Director Deportivo de Espadel Club tras evaluación en pista.',
+    racket: 'Bullpadel Vertex 04 2026',
+    preferredTime: 'Tardes (18:30 - 21:00)',
+    membershipType: 'Socio Oro Premium',
+    walletBalance: 42.50,
+    favoriteCourt: 'Pista 4 — Central Vertical',
+    achievements: [
+      { id: 'ach-1', title: 'Bautismo de Fuego', desc: 'Disputar tu primer partido oficial en Espadel Club', icon: '⚡', unlocked: true, date: '15 Sep 2026' },
+      { id: 'ach-2', title: 'Top 10 Victorias', desc: 'Alcanzar el top 10 de jugadores con más victorias del club', icon: '🏆', unlocked: true, date: '02 Oct 2026' },
+      { id: 'ach-3', title: 'Treinta Triunfos', desc: 'Conseguir 30 partidos ganados en el club', icon: '👑', unlocked: true, date: '14 Oct 2026' },
+      { id: 'ach-4', title: 'Racha Imparable', desc: 'Encadenar 3 o más victorias consecutivas', icon: '🔥', unlocked: true, progress: '3 seguidas activas' },
+      { id: 'ach-5', title: 'Dominador de Nave B', desc: 'Ganar un partido en la Pista 4 Central Vertical', icon: '🏛️', unlocked: true, date: '10 Oct 2026' },
+      { id: 'ach-6', title: 'Club Centurión', desc: 'Alcanzar los 50 partidos disputados en Espadel', icon: '🎯', unlocked: false, progress: '48 / 50 partidos' }
+    ],
     radarStats: {
       tecnica: 7,
       paredes: 6,

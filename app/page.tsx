@@ -17,7 +17,8 @@ import { AdminClubPanelModal } from '../components/AdminClubPanelModal';
 import { OnboardingAuthModal } from '../components/OnboardingAuthModal';
 import { AerialClubCourtsView } from '../components/AerialClubCourtsView';
 import { ClubRankingView } from '../components/ClubRankingView';
-import { Plus, Sparkles, Filter, Users, Flame, Calendar, Trophy, ShieldAlert, Award, KeyRound, ShieldCheck, Zap, Eye } from 'lucide-react';
+import { UserProfileView } from '../components/UserProfileView';
+import { Plus, Sparkles, Filter, Users, Flame, Calendar, Trophy, ShieldAlert, Award, KeyRound, ShieldCheck, Zap, Eye, User } from 'lucide-react';
 
 export default function HomePage() {
   const [currentClub, setCurrentClub] = useState<ClubTheme>(CLUBS[0]); // Espadel Club
@@ -455,36 +456,19 @@ export default function HomePage() {
           />
         )}
 
-        {/* TAB 5: MI PERFIL (MOBILE VIEW) */}
+        {/* TAB 5: MODO MI PERFIL OFICIAL (COMPLETO) */}
         {activeTab === 'profile' && (
-          <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 text-center max-w-md mx-auto shadow-xl">
-            <img
-              src={currentUser.avatar}
-              alt={currentUser.name}
-              className="w-20 h-20 rounded-full object-cover mx-auto mb-3 border-2 border-yellow-400"
-            />
-            <h2 className="text-lg font-bold text-white">{currentUser.name}</h2>
-            <div className="flex justify-center mt-2 mb-4">
-              <LevelBadge
-                level={currentUser.level}
-                category={currentUser.category}
-                size="md"
-                isCertified={currentUser.levelCertifiedByClub}
-              />
-            </div>
-            <button
-              onClick={() => setIsProfileOpen(true)}
-              className="w-full py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-200 text-xs font-bold mb-2 hover:bg-zinc-800"
-            >
-              Editar Foto y Datos de Perfil
-            </button>
-            <button
-              onClick={() => setIsQuizOpen(true)}
-              className="w-full py-2.5 rounded-xl bg-yellow-400 text-black text-xs font-black hover:bg-yellow-300"
-            >
-              Hacer Test de Nivelación (8 Preguntas)
-            </button>
-          </div>
+          <UserProfileView
+            currentUser={currentUser}
+            onSaveProfile={handleSaveProfile}
+            onOpenQuiz={() => setIsQuizOpen(true)}
+            onNavigateToRanking={() => setActiveTab('ranking')}
+            onNavigateToCourts={() => setActiveTab('aerial')}
+            onSelectPlayerForDetail={(p) => {
+              setSelectedPlayerForProfile(p);
+              setIsProfileOpen(true);
+            }}
+          />
         )}
       </main>
 
@@ -506,6 +490,10 @@ export default function HomePage() {
             <span>•</span>
             <button onClick={() => setActiveTab('ranking')} className="text-yellow-400 hover:underline font-bold">
               Ranking Victorias
+            </button>
+            <span>•</span>
+            <button onClick={() => setActiveTab('profile')} className="text-yellow-400 hover:underline font-bold">
+              Mi Perfil
             </button>
             <span>•</span>
             <button onClick={() => setIsAdminOpen(true)} className="text-zinc-400 hover:underline font-semibold">

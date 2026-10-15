@@ -61,6 +61,20 @@ export interface Player {
   };
   matchHistory?: PlayerMatchHistoryItem[];
   frequentPartners?: FrequentPartner[];
+  racket?: string; // Pala actual del jugador (ej: Bullpadel Vertex 04)
+  preferredTime?: string; // Franja horaria preferida
+  membershipType?: string; // Tipo de abono o socio
+  walletBalance?: number; // Saldo en el monedero del club en euros
+  favoriteCourt?: string; // Pista favorita en Espadel Club
+  achievements?: Array<{
+    id: string;
+    title: string;
+    desc: string;
+    icon: string;
+    unlocked: boolean;
+    progress?: string;
+    date?: string;
+  }>;
 }
 
 export interface MatchSlot {

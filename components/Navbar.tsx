@@ -146,12 +146,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             </span>
           </button>
 
-          {/* TAB 5: PERFIL (MOBILE) */}
+          {/* TAB 5: MI PERFIL (COMPLETO) */}
           <button
             onClick={() => onTabChange('profile')}
-            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-2 sm:hidden ${
+            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-black transition flex items-center gap-2 ${
               activeTab === 'profile'
-                ? 'bg-yellow-400 text-black'
+                ? 'bg-yellow-400 text-black shadow-lg shadow-yellow-400/20 ring-2 ring-yellow-300'
                 : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
             }`}
           >
@@ -171,8 +171,13 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
 
           <button
-            onClick={onOpenProfile}
-            className="flex items-center gap-2.5 p-1.5 sm:px-3 sm:py-1.5 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-yellow-400/40 transition"
+            onClick={() => onTabChange('profile')}
+            className={`flex items-center gap-2.5 p-1.5 sm:px-3 sm:py-1.5 rounded-2xl bg-zinc-900 border transition ${
+              activeTab === 'profile'
+                ? 'border-yellow-400 ring-2 ring-yellow-400/40 bg-zinc-800'
+                : 'border-zinc-800 hover:border-yellow-400/40'
+            }`}
+            title="Ir a Mi Perfil"
           >
             <img
               src={currentUser.avatar}
