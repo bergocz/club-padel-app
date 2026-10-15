@@ -255,27 +255,27 @@ export const AmericanaManager: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Top Controls & Navigation Bar */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-slate-900/80 border border-slate-800 rounded-3xl p-4 sm:p-5 shadow-xl backdrop-blur-md">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-zinc-950 border border-zinc-800 rounded-3xl p-4 sm:p-5 shadow-2xl backdrop-blur-md">
         {/* Left: Americana Identity & Status */}
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-emerald-500/20">
-            <Shuffle className="w-6 h-6 stroke-[2.5]" />
+          <div className="w-12 h-12 rounded-2xl bg-yellow-400 flex items-center justify-center text-black font-black shadow-lg shadow-yellow-400/20">
+            <Shuffle className="w-6 h-6 stroke-[3]" />
           </div>
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-base sm:text-lg font-black text-white">
                 Americana de Pádel
               </h2>
-              <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-mono text-[10px] font-bold">
+              <span className="px-2 py-0.5 rounded-full bg-yellow-400/20 border border-yellow-400/40 text-yellow-300 font-mono text-[10px] font-bold">
                 EN VIVO
               </span>
             </div>
-            <p className="text-xs text-slate-400 flex items-center gap-2 mt-0.5">
+            <p className="text-xs text-zinc-400 flex items-center gap-2 mt-0.5">
               <span>{activeCourts.length} pistas seleccionadas</span>
               <span>•</span>
               <span>{activePlayers.length} jugadores</span>
               <span>•</span>
-              <span className="font-mono text-emerald-400 font-bold">Ronda {currentRoundNumber}</span>
+              <span className="font-mono text-yellow-400 font-bold">Ronda {currentRoundNumber}</span>
             </p>
           </div>
         </div>
@@ -285,25 +285,25 @@ export const AmericanaManager: React.FC = () => {
           <button
             type="button"
             onClick={() => setIsCourtModalOpen(true)}
-            className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white font-bold text-xs transition flex items-center gap-1.5 active:scale-95"
+            className="px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-200 hover:text-yellow-400 font-bold text-xs transition flex items-center gap-1.5 active:scale-95 cursor-pointer"
           >
-            <Building2 className="w-3.5 h-3.5 text-emerald-400" />
+            <Building2 className="w-3.5 h-3.5 text-yellow-400" />
             <span>Pistas ({activeCourts.length}/6)</span>
           </button>
 
           <button
             type="button"
             onClick={() => setIsPlayerModalOpen(true)}
-            className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white font-bold text-xs transition flex items-center gap-1.5 active:scale-95"
+            className="px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-200 hover:text-yellow-400 font-bold text-xs transition flex items-center gap-1.5 active:scale-95 cursor-pointer"
           >
-            <Users className="w-3.5 h-3.5 text-emerald-400" />
+            <Users className="w-3.5 h-3.5 text-yellow-400" />
             <span>Jugadores ({activePlayers.length})</span>
           </button>
 
           <button
             type="button"
             onClick={() => setIsLeaderboardOpen(true)}
-            className="px-3.5 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-400 font-bold text-xs transition flex items-center gap-1.5 active:scale-95"
+            className="px-3.5 py-2 rounded-xl bg-yellow-400/10 hover:bg-yellow-400/20 border border-yellow-400/30 text-yellow-400 font-bold text-xs transition flex items-center gap-1.5 active:scale-95 cursor-pointer"
           >
             <Trophy className="w-3.5 h-3.5" />
             <span>Ranking Puntos</span>
@@ -313,7 +313,7 @@ export const AmericanaManager: React.FC = () => {
             <button
               type="button"
               onClick={handleShareRoundWhatsApp}
-              className="px-3.5 py-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-400 font-bold text-xs transition flex items-center gap-1.5 active:scale-95"
+              className="px-3.5 py-2 rounded-xl bg-yellow-400/10 hover:bg-yellow-400/20 border border-yellow-400/30 text-yellow-400 font-bold text-xs transition flex items-center gap-1.5 active:scale-95 cursor-pointer"
               title="Copiar cruces para WhatsApp"
             >
               {shareCopied ? <Check className="w-3.5 h-3.5" /> : <Share2 className="w-3.5 h-3.5" />}
@@ -324,7 +324,7 @@ export const AmericanaManager: React.FC = () => {
           <button
             type="button"
             onClick={handleToggleFullscreen}
-            className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-400 hover:text-white transition hidden sm:flex"
+            className="p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-yellow-400 transition hidden sm:flex cursor-pointer"
             title="Pantalla Completa"
           >
             <Maximize2 className="w-4 h-4" />
@@ -354,16 +354,16 @@ export const AmericanaManager: React.FC = () => {
 
       {/* Resting Players Alert Bar (if any player is resting this round) */}
       {currentRound?.restingPlayers && currentRound.restingPlayers.length > 0 && (
-        <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between text-xs text-amber-300">
+        <div className="p-3.5 rounded-2xl bg-yellow-400/10 border border-yellow-400/30 flex items-center justify-between text-xs text-yellow-300">
           <div className="flex items-center gap-2">
-            <Coffee className="w-4 h-4 text-amber-400 shrink-0" />
+            <Coffee className="w-4 h-4 text-yellow-400 shrink-0" />
             <span>
               <strong>Descanso en esta ronda:</strong>{' '}
               {currentRound.restingPlayers.map(p => `${p.name} (${p.position})`).join(', ')}
             </span>
           </div>
-          <span className="text-[10px] uppercase font-mono tracking-wider opacity-80">
-            Rotación automática justa
+          <span className="text-[10px] uppercase font-mono tracking-wider text-yellow-400/80">
+            Rotación justa
           </span>
         </div>
       )}
@@ -376,7 +376,7 @@ export const AmericanaManager: React.FC = () => {
               <span className="text-sm font-black text-white">
                 Partidos en Pista — Ronda {currentRound.roundNumber}
               </span>
-              <span className="text-xs font-mono text-slate-400">
+              <span className="text-xs font-mono text-zinc-400">
                 ({currentRound.matches.length} pistas disputándose)
               </span>
             </div>
@@ -384,7 +384,7 @@ export const AmericanaManager: React.FC = () => {
             <button
               type="button"
               onClick={handleGenerateRound}
-              className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/30 font-bold text-xs transition flex items-center gap-1.5 active:scale-95"
+              className="px-3.5 py-1.5 rounded-xl bg-yellow-400/15 border border-yellow-400/40 text-yellow-400 hover:bg-yellow-400/25 font-bold text-xs transition flex items-center gap-1.5 active:scale-95 cursor-pointer"
             >
               <Shuffle className="w-3.5 h-3.5" />
               <span>Resortear Ronda {currentRoundNumber}</span>
@@ -405,8 +405,8 @@ export const AmericanaManager: React.FC = () => {
         </div>
       ) : (
         /* Empty State / Initial Setup Screen */
-        <div className="text-center py-16 px-4 bg-slate-900/40 border border-slate-800 rounded-3xl p-8 space-y-4">
-          <div className="w-16 h-16 rounded-3xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mx-auto">
+        <div className="text-center py-16 px-4 bg-zinc-950 border border-zinc-800 rounded-3xl p-8 space-y-4">
+          <div className="w-16 h-16 rounded-3xl bg-yellow-400/10 border border-yellow-400/30 flex items-center justify-center text-yellow-400 mx-auto">
             <Shuffle className="w-8 h-8" />
           </div>
 
@@ -414,7 +414,7 @@ export const AmericanaManager: React.FC = () => {
             <h3 className="text-lg font-black text-white mb-1">
               ¡Configura tu Americana de Pádel!
             </h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-xs text-zinc-400 leading-relaxed">
               Tienes <strong>{activeCourts.length} pistas activas</strong> y{' '}
               <strong>{activePlayers.length} jugadores registrados</strong>. El algoritmo
               emparejará automáticamente a cada jugador de Revés con uno de Derecha, asignará pistas al azar y rotará compañeros.
@@ -425,7 +425,7 @@ export const AmericanaManager: React.FC = () => {
             <button
               type="button"
               onClick={handleGenerateRound}
-              className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-sm shadow-xl shadow-emerald-500/25 transition active:scale-95 flex items-center gap-2"
+              className="px-6 py-3.5 rounded-2xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-sm shadow-xl shadow-yellow-400/25 transition active:scale-95 flex items-center gap-2 cursor-pointer"
             >
               <Sparkles className="w-4 h-4 fill-current" />
               <span>Sortear Primera Ronda</span>
@@ -434,7 +434,7 @@ export const AmericanaManager: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsPlayerModalOpen(true)}
-              className="px-5 py-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs transition"
+              className="px-5 py-3.5 rounded-2xl bg-zinc-900 hover:bg-zinc-800 text-zinc-200 font-bold text-xs transition border border-zinc-800 cursor-pointer"
             >
               Editar Jugadores y Lados
             </button>

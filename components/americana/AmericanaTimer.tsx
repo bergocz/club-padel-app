@@ -95,22 +95,22 @@ export const AmericanaTimer: React.FC<AmericanaTimerProps> = ({
   const isWarning = timeRemaining <= 60 && timeRemaining > 30;
 
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900/95 to-slate-950 border border-slate-800 p-5 sm:p-6 shadow-2xl">
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-zinc-950 via-zinc-900 to-black border-2 border-yellow-400/30 p-5 sm:p-6 shadow-2xl shadow-yellow-400/5">
       {/* Background glow when warning/danger */}
       {isDanger && (
-        <div className="absolute inset-0 bg-red-600/10 animate-pulse pointer-events-none" />
+        <div className="absolute inset-0 bg-red-600/15 animate-pulse pointer-events-none" />
       )}
 
       <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
         {/* Left: Round & Duration Controls */}
         <div className="space-y-3">
           <div className="flex items-center gap-3">
-            <span className="px-3 py-1 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black text-xs uppercase tracking-wider shadow-md shadow-emerald-500/20">
+            <span className="px-3.5 py-1 rounded-xl bg-yellow-400 text-black font-black text-xs uppercase tracking-wider shadow-md shadow-yellow-400/20">
               Ronda {roundNumber}
             </span>
-            <div className="flex items-center gap-1.5 text-xs text-slate-400">
-              <Clock className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Duración del partido:</span>
+            <div className="flex items-center gap-1.5 text-xs text-zinc-300">
+              <Clock className="w-3.5 h-3.5 text-yellow-400" />
+              <span className="font-medium">Duración del partido:</span>
             </div>
           </div>
 
@@ -124,8 +124,8 @@ export const AmericanaTimer: React.FC<AmericanaTimerProps> = ({
                 onClick={() => onChangeDuration(mins)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
                   durationMinutes === mins
-                    ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20 font-black'
-                    : 'bg-slate-800 hover:bg-slate-700 text-slate-300 disabled:opacity-50'
+                    ? 'bg-yellow-400 text-black shadow-md shadow-yellow-400/25 font-black ring-2 ring-yellow-300'
+                    : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 disabled:opacity-50'
                 }`}
               >
                 {mins} min
@@ -133,21 +133,21 @@ export const AmericanaTimer: React.FC<AmericanaTimerProps> = ({
             ))}
 
             {/* Custom minute stepper */}
-            <div className="flex items-center gap-1 bg-slate-950 border border-slate-800 rounded-xl px-2 py-1">
+            <div className="flex items-center gap-1 bg-black border border-zinc-800 rounded-xl px-2 py-1">
               <button
                 type="button"
                 disabled={isRunning || durationMinutes <= 1}
                 onClick={() => onChangeDuration(Math.max(1, durationMinutes - 1))}
-                className="w-5 h-5 flex items-center justify-center text-slate-400 hover:text-white disabled:opacity-40 text-xs font-bold"
+                className="w-5 h-5 flex items-center justify-center text-zinc-400 hover:text-yellow-400 disabled:opacity-40 text-xs font-bold"
               >
                 -
               </button>
-              <span className="font-mono text-xs font-bold text-slate-200 px-1">{durationMinutes}m</span>
+              <span className="font-mono text-xs font-bold text-yellow-400 px-1">{durationMinutes}m</span>
               <button
                 type="button"
                 disabled={isRunning || durationMinutes >= 60}
                 onClick={() => onChangeDuration(Math.min(60, durationMinutes + 1))}
-                className="w-5 h-5 flex items-center justify-center text-slate-400 hover:text-white disabled:opacity-40 text-xs font-bold"
+                className="w-5 h-5 flex items-center justify-center text-zinc-400 hover:text-yellow-400 disabled:opacity-40 text-xs font-bold"
               >
                 +
               </button>
@@ -155,9 +155,9 @@ export const AmericanaTimer: React.FC<AmericanaTimerProps> = ({
           </div>
 
           {/* Mobile phone helper indicators */}
-          <div className="flex items-center gap-3 text-[11px] text-slate-400 pt-1">
+          <div className="flex items-center gap-3 text-[11px] text-zinc-400 pt-1">
             <span className="flex items-center gap-1">
-              <Smartphone className="w-3.5 h-3.5 text-emerald-400" />
+              <Smartphone className="w-3.5 h-3.5 text-yellow-400" />
               <span>{wakeLockActive ? '📱 Pantalla activa' : '📱 Alarma móvil lista'}</span>
             </span>
             <span>•</span>
@@ -166,11 +166,11 @@ export const AmericanaTimer: React.FC<AmericanaTimerProps> = ({
               onClick={handleTestAudio}
               className={`flex items-center gap-1 font-bold transition px-2 py-0.5 rounded-lg border ${
                 isAudioTesting
-                  ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 animate-pulse'
-                  : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
+                  ? 'bg-yellow-400 text-black border-yellow-400 animate-pulse'
+                  : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border-zinc-700'
               }`}
             >
-              <Volume2 className="w-3 h-3 text-emerald-400" />
+              <Volume2 className="w-3 h-3 text-yellow-400" />
               <span>{isAudioTesting ? '¡Sonando...!' : 'Probar Bocina'}</span>
             </button>
           </div>
@@ -181,32 +181,32 @@ export const AmericanaTimer: React.FC<AmericanaTimerProps> = ({
           <div
             className={`font-mono text-5xl sm:text-6xl font-black tracking-tight transition-all duration-300 ${
               isDanger
-                ? 'text-red-500 scale-105 animate-pulse drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]'
+                ? 'text-red-500 scale-105 animate-pulse drop-shadow-[0_0_15px_rgba(239,68,68,0.6)]'
                 : isWarning
-                ? 'text-amber-400 drop-shadow-[0_0_10px_rgba(245,158,11,0.3)]'
+                ? 'text-amber-400 drop-shadow-[0_0_12px_rgba(245,158,11,0.4)]'
                 : isRunning
-                ? 'text-emerald-400 drop-shadow-[0_0_12px_rgba(16,185,129,0.3)]'
-                : 'text-white'
+                ? 'text-yellow-400 drop-shadow-[0_0_18px_rgba(250,204,21,0.45)]'
+                : 'text-zinc-100'
             }`}
           >
             {formattedTime}
           </div>
 
           {/* Progress bar */}
-          <div className="w-48 sm:w-60 h-2 bg-slate-800 rounded-full mt-2.5 overflow-hidden p-0.5">
+          <div className="w-48 sm:w-60 h-2 bg-zinc-900 border border-zinc-800 rounded-full mt-2.5 overflow-hidden p-0.5">
             <div
               className={`h-full rounded-full transition-all duration-1000 ${
                 isDanger
                   ? 'bg-gradient-to-r from-red-500 to-amber-500'
                   : isWarning
                   ? 'bg-gradient-to-r from-amber-500 to-yellow-400'
-                  : 'bg-gradient-to-r from-emerald-500 to-teal-400'
+                  : 'bg-gradient-to-r from-yellow-400 via-amber-300 to-yellow-500'
               }`}
               style={{ width: `${Math.min(100, Math.max(0, progressPercent))}%` }}
             />
           </div>
 
-          <div className="text-[10px] uppercase font-mono tracking-wider text-slate-500 mt-1">
+          <div className="text-[10px] uppercase font-mono tracking-wider text-zinc-500 mt-1">
             {isRunning ? 'Partido en curso' : timeRemaining === 0 ? '¡Tiempo cumplido!' : 'En pausa'}
           </div>
         </div>
@@ -221,7 +221,7 @@ export const AmericanaTimer: React.FC<AmericanaTimerProps> = ({
                 americanaAudio.playWhistle();
                 onStart();
               }}
-              className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-sm shadow-xl shadow-emerald-500/25 transition-all flex items-center gap-2 active:scale-95"
+              className="px-6 py-3.5 rounded-2xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-sm shadow-xl shadow-yellow-400/25 transition-all flex items-center gap-2 active:scale-95 cursor-pointer"
             >
               <Play className="w-5 h-5 fill-current" />
               <span>Iniciar Tiempo</span>
@@ -230,7 +230,7 @@ export const AmericanaTimer: React.FC<AmericanaTimerProps> = ({
             <button
               type="button"
               onClick={onPause}
-              className="px-6 py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm shadow-xl shadow-amber-500/25 transition-all flex items-center gap-2 active:scale-95"
+              className="px-6 py-3.5 rounded-2xl bg-zinc-800 hover:bg-zinc-700 border-2 border-yellow-400/50 text-yellow-400 font-black text-sm shadow-xl transition-all flex items-center gap-2 active:scale-95 cursor-pointer"
             >
               <Pause className="w-5 h-5 fill-current" />
               <span>Pausar</span>
@@ -240,7 +240,7 @@ export const AmericanaTimer: React.FC<AmericanaTimerProps> = ({
           <button
             type="button"
             onClick={onReset}
-            className="p-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition active:scale-95 border border-slate-700"
+            className="p-3.5 rounded-2xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-yellow-400 transition active:scale-95 border border-zinc-800"
             title="Reiniciar reloj de la ronda"
           >
             <RotateCcw className="w-5 h-5" />
@@ -249,11 +249,11 @@ export const AmericanaTimer: React.FC<AmericanaTimerProps> = ({
           <button
             type="button"
             onClick={onNextRound}
-            className="px-4 py-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white font-bold text-xs sm:text-sm transition flex items-center gap-1.5 active:scale-95"
+            className="px-4 py-3.5 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-200 hover:text-yellow-400 font-bold text-xs sm:text-sm transition flex items-center gap-1.5 active:scale-95 cursor-pointer"
             title="Sortear siguiente ronda ahora"
           >
             <span>Siguiente Ronda</span>
-            <FastForward className="w-4 h-4 text-emerald-400" />
+            <FastForward className="w-4 h-4 text-yellow-400" />
           </button>
         </div>
       </div>

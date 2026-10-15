@@ -15,14 +15,15 @@ import { ProfileModal } from '../components/ProfileModal';
 import { B2BDemoDrawer } from '../components/B2BDemoDrawer';
 import { AdminClubPanelModal } from '../components/AdminClubPanelModal';
 import { OnboardingAuthModal } from '../components/OnboardingAuthModal';
-import { Plus, Sparkles, Filter, Users, Flame, Calendar, Trophy, ShieldAlert, Award, KeyRound, ShieldCheck, Zap } from 'lucide-react';
+import { AmericanaManager } from '../components/americana/AmericanaManager';
+import { Plus, Sparkles, Filter, Users, Flame, Calendar, Trophy, ShieldAlert, Award, KeyRound, ShieldCheck, Zap, Shuffle } from 'lucide-react';
 
 export default function HomePage() {
   const [currentClub, setCurrentClub] = useState<ClubTheme>(CLUBS[0]); // Spadel Club
   const [currentUser, setCurrentUser] = useState<Player>(INITIAL_USER);
   const [clubPlayers, setClubPlayers] = useState<Player[]>(MOCK_CLUB_PLAYERS);
   const [matches, setMatches] = useState<OpenMatch[]>(INITIAL_MATCHES);
-  const [activeTab, setActiveTab] = useState<'matches' | 'booking' | 'profile'>('matches');
+  const [activeTab, setActiveTab] = useState<'americana' | 'matches' | 'booking' | 'profile'>('americana');
 
   // Modals
   const [isQuizOpen, setIsQuizOpen] = useState(false);
@@ -261,16 +262,28 @@ export default function HomePage() {
             {/* Quick Actions */}
             <div className="flex flex-col sm:flex-row lg:flex-col gap-2.5 shrink-0">
               <button
-                onClick={() => setIsCreateMatchOpen(true)}
-                className="px-6 py-3.5 rounded-2xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs sm:text-sm shadow-xl shadow-yellow-400/20 transition flex items-center justify-center gap-2"
+                onClick={() => setActiveTab('americana')}
+                className={`px-6 py-3.5 rounded-2xl font-black text-xs sm:text-sm shadow-xl transition flex items-center justify-center gap-2 cursor-pointer ${
+                  activeTab === 'americana'
+                    ? 'bg-yellow-400 text-black shadow-yellow-400/25 ring-2 ring-yellow-300'
+                    : 'bg-yellow-400/15 border border-yellow-400/40 text-yellow-400 hover:bg-yellow-400/25'
+                }`}
               >
-                <Plus className="w-4 h-4 stroke-[3]" />
+                <Shuffle className="w-4 h-4 stroke-[3]" />
+                <span>Americana de 6 Pistas</span>
+              </button>
+
+              <button
+                onClick={() => setIsCreateMatchOpen(true)}
+                className="px-6 py-3 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-white font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Plus className="w-4 h-4 text-yellow-400 stroke-[3]" />
                 <span>Crear Partido Abierto</span>
               </button>
 
               <button
                 onClick={() => setActiveTab('booking')}
-                className="px-6 py-3 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-white font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2"
+                className="px-6 py-3 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-white font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Calendar className="w-4 h-4 text-zinc-400" />
                 <span>Ver Pistas del Club</span>
@@ -278,7 +291,7 @@ export default function HomePage() {
 
               <button
                 onClick={() => setIsAdminOpen(true)}
-                className="px-6 py-2.5 rounded-2xl bg-zinc-900/80 hover:bg-yellow-400/10 border border-yellow-400/30 text-yellow-300 font-bold text-xs transition flex items-center justify-center gap-2"
+                className="px-6 py-2.5 rounded-2xl bg-zinc-900/80 hover:bg-yellow-400/10 border border-yellow-400/30 text-yellow-300 font-bold text-xs transition flex items-center justify-center gap-2 cursor-pointer"
               >
                 <KeyRound className="w-3.5 h-3.5" />
                 <span>Panel Modificar Niveles (Club)</span>
@@ -286,6 +299,11 @@ export default function HomePage() {
             </div>
           </div>
         </div>
+
+        {/* TAB 0: AMERICANA DE PÁDEL */}
+        {activeTab === 'americana' && (
+          <AmericanaManager />
+        )}
 
         {/* TAB 1: PARTIDOS ABIERTOS */}
         {activeTab === 'matches' && (

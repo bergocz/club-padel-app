@@ -3,7 +3,7 @@
 import React from 'react';
 import { ClubTheme, Player } from '../types';
 import { LevelBadge } from './LevelBadge';
-import { ShieldCheck, ChevronDown, User, Sparkles, Building2, Flame, KeyRound, LogIn } from 'lucide-react';
+import { ShieldCheck, ChevronDown, User, Sparkles, Building2, Flame, KeyRound, LogIn, Shuffle } from 'lucide-react';
 
 interface NavbarProps {
   currentClub: ClubTheme;
@@ -14,8 +14,8 @@ interface NavbarProps {
   onOpenB2B: () => void;
   onOpenAdmin: () => void;
   onOpenOnboarding: () => void;
-  activeTab: 'matches' | 'booking' | 'profile';
-  onTabChange: (tab: 'matches' | 'booking' | 'profile') => void;
+  activeTab: 'americana' | 'matches' | 'booking' | 'profile';
+  onTabChange: (tab: 'americana' | 'matches' | 'booking' | 'profile') => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -89,7 +89,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => onTabChange('matches')}
             className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-black transition flex items-center gap-2 ${
               activeTab === 'matches'
-                ? 'bg-yellow-400 text-black shadow-lg shadow-yellow-400/10'
+                ? 'bg-yellow-400 text-black shadow-lg shadow-yellow-400/20'
                 : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
             }`}
           >
@@ -98,10 +98,27 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
 
           <button
+            onClick={() => onTabChange('americana')}
+            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-black transition flex items-center gap-2 ${
+              activeTab === 'americana'
+                ? 'bg-yellow-400 text-black shadow-lg shadow-yellow-400/25 ring-2 ring-yellow-300'
+                : 'text-zinc-400 hover:text-yellow-400 hover:bg-zinc-900'
+            }`}
+          >
+            <Shuffle className="w-4 h-4" />
+            <span>Americana Pádel</span>
+            <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-tight ${
+              activeTab === 'americana' ? 'bg-black text-yellow-400' : 'bg-yellow-400 text-black'
+            }`}>
+              6 Pistas
+            </span>
+          </button>
+
+          <button
             onClick={() => onTabChange('booking')}
             className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-black transition flex items-center gap-2 ${
               activeTab === 'booking'
-                ? 'bg-yellow-400 text-black shadow-lg shadow-yellow-400/10'
+                ? 'bg-yellow-400 text-black shadow-lg shadow-yellow-400/20'
                 : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
             }`}
           >

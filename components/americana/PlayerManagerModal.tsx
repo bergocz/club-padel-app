@@ -2,8 +2,7 @@
 
 import React, { useState } from 'react';
 import { AmericanaPlayer, PlayerPosition } from '../../types/americana';
-import { DEFAULT_PRESET_PLAYERS } from '../../utils/americanaAlgorithm';
-import { X, UserPlus, Users, Trash2, CheckCircle2, AlertCircle, Shuffle, Sparkles, UserCheck } from 'lucide-react';
+import { X, UserPlus, Users, Trash2, CheckCircle2, AlertCircle, UserCheck } from 'lucide-react';
 
 interface PlayerManagerModalProps {
   isOpen: boolean;
@@ -68,7 +67,6 @@ export const PlayerManagerModal: React.FC<PlayerManagerModalProps> = ({
   };
 
   const handleLoadPreset = (count: number) => {
-    // Generate 'count' players with balanced positions
     const sampleNames = [
       'Ale Galán', 'Juan Lebrón', 'Arturo Coello', 'Agustín Tapia',
       'Fede Chingotto', 'Paquito Navarro', 'Martín Di Nenno', 'Franco Stupaczuk',
@@ -131,19 +129,19 @@ export const PlayerManagerModal: React.FC<PlayerManagerModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative max-w-2xl w-full max-h-[92vh] flex flex-col bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+      <div className="relative max-w-2xl w-full max-h-[92vh] flex flex-col bg-zinc-950 border border-zinc-800 rounded-3xl shadow-2xl overflow-hidden">
         {/* Modal Header */}
-        <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/60">
+        <div className="px-6 py-4 border-b border-zinc-800 flex items-center justify-between bg-black">
           <div className="flex items-center gap-2.5">
-            <Users className="w-5 h-5 text-emerald-400" />
+            <Users className="w-5 h-5 text-yellow-400" />
             <h2 className="text-base sm:text-lg font-black text-white">
               Gestión de Jugadores de la Americana
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition"
+            className="w-8 h-8 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center transition cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -152,36 +150,36 @@ export const PlayerManagerModal: React.FC<PlayerManagerModalProps> = ({
         {/* Modal Body */}
         <div className="p-4 sm:p-6 overflow-y-auto space-y-5 flex-1">
           {/* Quick Balance Status */}
-          <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="p-4 rounded-2xl bg-black border border-zinc-800 flex flex-wrap items-center justify-between gap-3 text-xs">
             <div className="flex items-center gap-3">
-              <span className="font-mono text-slate-400">Total Activos:</span>
-              <span className="font-mono font-black text-white text-sm">
+              <span className="font-mono text-zinc-400">Total Activos:</span>
+              <span className="font-mono font-black text-yellow-400 text-sm">
                 {activePlayers.length}
-                <span className="text-slate-500 font-normal"> / {neededPlayers} requeridos</span>
+                <span className="text-zinc-500 font-normal"> / {neededPlayers} requeridos</span>
               </span>
             </div>
 
             <div className="flex items-center gap-2 font-mono">
-              <span className="px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30">
+              <span className="px-2 py-0.5 rounded-md bg-yellow-400/20 text-yellow-300 border border-yellow-400/40">
                 {revesCount} Revés
               </span>
-              <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              <span className="px-2 py-0.5 rounded-md bg-zinc-800 text-zinc-200 border border-zinc-700">
                 {derechaCount} Derecha
               </span>
-              <span className="px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30">
+              <span className="px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/40">
                 {indiferenteCount} Poliv.
               </span>
             </div>
 
             {activePlayers.length < neededPlayers ? (
-              <div className="w-full flex items-center gap-1.5 text-amber-400 text-[11px] font-medium pt-1 border-t border-slate-900">
+              <div className="w-full flex items-center gap-1.5 text-amber-400 text-[11px] font-medium pt-1 border-t border-zinc-900">
                 <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                 <span>
                   Faltan {neededPlayers - activePlayers.length} jugadores para completar las {activeCourtsCount} pistas activas ({neededPlayers} jugadores).
                 </span>
               </div>
             ) : (
-              <div className="w-full flex items-center gap-1.5 text-emerald-400 text-[11px] font-medium pt-1 border-t border-slate-900">
+              <div className="w-full flex items-center gap-1.5 text-yellow-400 text-[11px] font-medium pt-1 border-t border-zinc-900">
                 <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
                 <span>
                   Plazas cubiertas para {activeCourtsCount} pistas
@@ -193,12 +191,12 @@ export const PlayerManagerModal: React.FC<PlayerManagerModalProps> = ({
 
           {/* Quick Presets Bar */}
           <div className="space-y-1.5">
-            <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400 flex items-center justify-between">
+            <div className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 flex items-center justify-between">
               <span>Carga Rápida de Ejemplo:</span>
               <button
                 type="button"
                 onClick={() => setShowBatchImport(!showBatchImport)}
-                className="text-emerald-400 hover:underline font-bold"
+                className="text-yellow-400 hover:underline font-bold cursor-pointer"
               >
                 {showBatchImport ? 'Ocultar pegar lista' : '📋 Pegar lista de nombres'}
               </button>
@@ -207,28 +205,28 @@ export const PlayerManagerModal: React.FC<PlayerManagerModalProps> = ({
               <button
                 type="button"
                 onClick={() => handleLoadPreset(8)}
-                className="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition"
+                className="px-2.5 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 text-xs font-bold transition border border-zinc-800 cursor-pointer"
               >
                 8 Jugadores (2 pistas)
               </button>
               <button
                 type="button"
                 onClick={() => handleLoadPreset(12)}
-                className="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition"
+                className="px-2.5 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 text-xs font-bold transition border border-zinc-800 cursor-pointer"
               >
                 12 Jugadores (3 pistas)
               </button>
               <button
                 type="button"
                 onClick={() => handleLoadPreset(16)}
-                className="px-2.5 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-400 text-xs font-bold transition"
+                className="px-2.5 py-1.5 rounded-xl bg-yellow-400 text-black text-xs font-black shadow-md shadow-yellow-400/20 transition cursor-pointer"
               >
                 16 Jugadores (4 pistas)
               </button>
               <button
                 type="button"
                 onClick={() => handleLoadPreset(24)}
-                className="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition"
+                className="px-2.5 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 text-xs font-bold transition border border-zinc-800 cursor-pointer"
               >
                 24 Jugadores (6 pistas llenas)
               </button>
@@ -236,7 +234,7 @@ export const PlayerManagerModal: React.FC<PlayerManagerModalProps> = ({
                 <button
                   type="button"
                   onClick={() => onUpdatePlayers([])}
-                  className="px-2.5 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-bold transition ml-auto"
+                  className="px-2.5 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-bold transition ml-auto cursor-pointer"
                 >
                   Vaciar Todo
                 </button>
@@ -246,8 +244,8 @@ export const PlayerManagerModal: React.FC<PlayerManagerModalProps> = ({
 
           {/* Batch Import Textarea */}
           {showBatchImport && (
-            <div className="p-3 bg-slate-950 border border-slate-800 rounded-2xl space-y-2">
-              <div className="text-xs text-slate-400">
+            <div className="p-3 bg-black border border-zinc-800 rounded-2xl space-y-2">
+              <div className="text-xs text-zinc-400">
                 Pega un nombre por línea. Puedes añadir (R) para revés o (D) para derecha al lado del nombre:
               </div>
               <textarea
@@ -255,12 +253,12 @@ export const PlayerManagerModal: React.FC<PlayerManagerModalProps> = ({
                 onChange={(e) => setQuickNamesText(e.target.value)}
                 placeholder={"Juan Pérez (R)\nCarlos López (D)\nMarta Ruiz"}
                 rows={4}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 font-mono"
+                className="w-full bg-zinc-900 border border-zinc-700 rounded-xl p-2.5 text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-yellow-400 font-mono"
               />
               <button
                 type="button"
                 onClick={handleBatchImport}
-                className="w-full py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-black rounded-xl transition"
+                className="w-full py-2 bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-black rounded-xl transition cursor-pointer"
               >
                 Importar Lista
               </button>
@@ -268,8 +266,8 @@ export const PlayerManagerModal: React.FC<PlayerManagerModalProps> = ({
           )}
 
           {/* Add Single Player Form */}
-          <form onSubmit={handleAddPlayer} className="space-y-2.5 bg-slate-950/50 p-3.5 rounded-2xl border border-slate-800">
-            <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400">
+          <form onSubmit={handleAddPlayer} className="space-y-2.5 bg-black/60 p-3.5 rounded-2xl border border-zinc-800">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400">
               Añadir Jugador Individual:
             </span>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
@@ -278,18 +276,18 @@ export const PlayerManagerModal: React.FC<PlayerManagerModalProps> = ({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Nombre del jugador (ej. Carlos)"
-                className="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                className="flex-1 bg-zinc-900 border border-zinc-700 rounded-xl px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-yellow-400"
               />
 
               {/* Position selector */}
-              <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-700">
+              <div className="flex items-center gap-1 bg-zinc-900 p-1 rounded-xl border border-zinc-700">
                 <button
                   type="button"
                   onClick={() => setPosition('reves')}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition ${
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${
                     position === 'reves'
-                      ? 'bg-purple-600 text-white shadow'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-yellow-400 text-black shadow'
+                      : 'text-zinc-400 hover:text-white'
                   }`}
                 >
                   Revés
@@ -297,10 +295,10 @@ export const PlayerManagerModal: React.FC<PlayerManagerModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setPosition('derecha')}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition ${
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${
                     position === 'derecha'
-                      ? 'bg-emerald-600 text-white shadow'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-zinc-700 text-white shadow'
+                      : 'text-zinc-400 hover:text-white'
                   }`}
                 >
                   Derecha
@@ -308,10 +306,10 @@ export const PlayerManagerModal: React.FC<PlayerManagerModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setPosition('indiferente')}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition ${
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${
                     position === 'indiferente'
-                      ? 'bg-amber-600 text-white shadow'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-amber-500 text-black font-black shadow'
+                      : 'text-zinc-400 hover:text-white'
                   }`}
                 >
                   Ambos
@@ -321,7 +319,7 @@ export const PlayerManagerModal: React.FC<PlayerManagerModalProps> = ({
               <button
                 type="submit"
                 disabled={!name.trim()}
-                className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-40 text-slate-950 font-black text-xs transition flex items-center justify-center gap-1.5 shrink-0"
+                className="px-4 py-2 rounded-xl bg-yellow-400 hover:bg-yellow-300 disabled:opacity-40 text-black font-black text-xs transition flex items-center justify-center gap-1.5 shrink-0 cursor-pointer"
               >
                 <UserPlus className="w-3.5 h-3.5" />
                 <span>Añadir</span>
@@ -331,13 +329,13 @@ export const PlayerManagerModal: React.FC<PlayerManagerModalProps> = ({
 
           {/* Players List Table */}
           <div className="space-y-2">
-            <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400 flex items-center justify-between">
+            <div className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 flex items-center justify-between">
               <span>Lista de Jugadores Registrados ({players.length}):</span>
-              <span className="text-[10px] text-slate-500">Haz clic en la posición para cambiarla</span>
+              <span className="text-[10px] text-zinc-500">Haz clic en la posición para cambiarla</span>
             </div>
 
             {players.length === 0 ? (
-              <div className="py-8 text-center text-slate-500 text-xs bg-slate-950/40 rounded-2xl border border-dashed border-slate-800">
+              <div className="py-8 text-center text-zinc-500 text-xs bg-black/40 rounded-2xl border border-dashed border-zinc-800">
                 No hay jugadores añadidos aún. Carga un preset o añade nombres arriba.
               </div>
             ) : (
@@ -347,39 +345,39 @@ export const PlayerManagerModal: React.FC<PlayerManagerModalProps> = ({
                     key={p.id}
                     className={`flex items-center justify-between p-2.5 rounded-xl border transition ${
                       p.active
-                        ? 'bg-slate-950/60 border-slate-800'
-                        : 'bg-slate-950/20 border-slate-900 opacity-60'
+                        ? 'bg-black/60 border-zinc-800'
+                        : 'bg-black/20 border-zinc-900 opacity-60'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
-                      <span className="font-mono text-xs text-slate-500 w-5">#{idx + 1}</span>
+                      <span className="font-mono text-xs text-zinc-500 w-5">#{idx + 1}</span>
                       <button
                         type="button"
                         onClick={() => handleToggleActive(p.id)}
-                        className={`w-6 h-6 rounded-lg flex items-center justify-center transition ${
+                        className={`w-6 h-6 rounded-lg flex items-center justify-center transition cursor-pointer ${
                           p.active
-                            ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
-                            : 'bg-slate-800 text-slate-500'
+                            ? 'bg-yellow-400/20 text-yellow-400 border border-yellow-400/40'
+                            : 'bg-zinc-800 text-zinc-500'
                         }`}
                         title={p.active ? 'Jugador activo' : 'En pausa / No juega esta ronda'}
                       >
                         <UserCheck className="w-3.5 h-3.5" />
                       </button>
-                      <span className={`text-xs font-bold ${p.active ? 'text-white' : 'text-slate-400 line-through'}`}>
+                      <span className={`text-xs font-bold ${p.active ? 'text-white' : 'text-zinc-500 line-through'}`}>
                         {p.name}
                       </span>
                     </div>
 
                     <div className="flex items-center gap-2">
                       {/* Position switcher pills */}
-                      <div className="flex items-center gap-1 bg-slate-900 p-0.5 rounded-lg border border-slate-800">
+                      <div className="flex items-center gap-1 bg-zinc-900 p-0.5 rounded-lg border border-zinc-800">
                         <button
                           type="button"
                           onClick={() => handleChangePosition(p.id, 'reves')}
-                          className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
+                          className={`px-1.5 py-0.5 rounded text-[10px] font-bold cursor-pointer ${
                             p.position === 'reves'
-                              ? 'bg-purple-600 text-white'
-                              : 'text-slate-500 hover:text-slate-300'
+                              ? 'bg-yellow-400 text-black font-black'
+                              : 'text-zinc-500 hover:text-zinc-300'
                           }`}
                         >
                           Revés
@@ -387,10 +385,10 @@ export const PlayerManagerModal: React.FC<PlayerManagerModalProps> = ({
                         <button
                           type="button"
                           onClick={() => handleChangePosition(p.id, 'derecha')}
-                          className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
+                          className={`px-1.5 py-0.5 rounded text-[10px] font-bold cursor-pointer ${
                             p.position === 'derecha'
-                              ? 'bg-emerald-600 text-white'
-                              : 'text-slate-500 hover:text-slate-300'
+                              ? 'bg-zinc-700 text-white font-bold'
+                              : 'text-zinc-500 hover:text-zinc-300'
                           }`}
                         >
                           Derecha
@@ -398,10 +396,10 @@ export const PlayerManagerModal: React.FC<PlayerManagerModalProps> = ({
                         <button
                           type="button"
                           onClick={() => handleChangePosition(p.id, 'indiferente')}
-                          className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
+                          className={`px-1.5 py-0.5 rounded text-[10px] font-bold cursor-pointer ${
                             p.position === 'indiferente'
-                              ? 'bg-amber-600 text-white'
-                              : 'text-slate-500 hover:text-slate-300'
+                              ? 'bg-amber-500 text-black font-black'
+                              : 'text-zinc-500 hover:text-zinc-300'
                           }`}
                         >
                           Ambos
@@ -412,7 +410,7 @@ export const PlayerManagerModal: React.FC<PlayerManagerModalProps> = ({
                       <button
                         type="button"
                         onClick={() => handleDeletePlayer(p.id)}
-                        className="w-7 h-7 rounded-lg hover:bg-red-500/20 text-slate-500 hover:text-red-400 flex items-center justify-center transition"
+                        className="w-7 h-7 rounded-lg hover:bg-red-500/20 text-zinc-500 hover:text-red-400 flex items-center justify-center transition cursor-pointer"
                         title="Eliminar jugador"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -426,14 +424,14 @@ export const PlayerManagerModal: React.FC<PlayerManagerModalProps> = ({
         </div>
 
         {/* Modal Footer */}
-        <div className="px-6 py-3.5 border-t border-slate-800 bg-slate-950/80 flex items-center justify-between">
-          <span className="text-xs text-slate-400 font-mono">
+        <div className="px-6 py-3.5 border-t border-zinc-800 bg-black flex items-center justify-between">
+          <span className="text-xs text-zinc-400 font-mono">
             {activePlayers.length} de {players.length} jugadores listos
           </span>
           <button
             type="button"
             onClick={onClose}
-            className="px-6 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition"
+            className="px-6 py-2 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs transition cursor-pointer"
           >
             Guardar y Cerrar
           </button>

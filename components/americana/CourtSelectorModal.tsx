@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { ClubCourt } from '../../types/americana';
-import { X, Check, Grid, Sparkles, Building2 } from 'lucide-react';
+import { X, Check, Building2 } from 'lucide-react';
 
 interface CourtSelectorModalProps {
   isOpen: boolean;
@@ -41,24 +41,24 @@ export const CourtSelectorModal: React.FC<CourtSelectorModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative max-w-xl w-full bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+      <div className="relative max-w-xl w-full bg-zinc-950 border border-zinc-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/60">
+        <div className="px-6 py-4 border-b border-zinc-800 flex items-center justify-between bg-black">
           <div className="flex items-center gap-2.5">
-            <Building2 className="w-5 h-5 text-emerald-400" />
+            <Building2 className="w-5 h-5 text-yellow-400" />
             <div>
               <h2 className="text-base sm:text-lg font-black text-white">
                 Pistas del Club para la Americana
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-zinc-400">
                 Selecciona qué pistas de las 6 disponibles vais a utilizar hoy
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition"
+            className="w-8 h-8 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center transition cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -68,7 +68,7 @@ export const CourtSelectorModal: React.FC<CourtSelectorModalProps> = ({
         <div className="p-4 sm:p-6 space-y-4">
           {/* Quick Select Buttons */}
           <div className="flex items-center justify-between flex-wrap gap-2">
-            <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400">
               Selección Rápida:
             </span>
             <div className="flex items-center gap-1.5">
@@ -77,10 +77,10 @@ export const CourtSelectorModal: React.FC<CourtSelectorModalProps> = ({
                   key={num}
                   type="button"
                   onClick={() => handleSelectCount(num)}
-                  className={`px-3 py-1 rounded-xl text-xs font-bold transition ${
+                  className={`px-3 py-1 rounded-xl text-xs font-bold transition cursor-pointer ${
                     activeCount === num
-                      ? 'bg-emerald-500 text-slate-950 font-black'
-                      : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                      ? 'bg-yellow-400 text-black font-black shadow-md shadow-yellow-400/20'
+                      : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800'
                   }`}
                 >
                   {num} pistas ({num * 4} jug.)
@@ -96,18 +96,18 @@ export const CourtSelectorModal: React.FC<CourtSelectorModalProps> = ({
                 key={court.id}
                 className={`p-3.5 rounded-2xl border transition-all ${
                   court.active
-                    ? 'bg-gradient-to-br from-slate-900 to-slate-950 border-emerald-500/50 shadow-md shadow-emerald-500/5'
-                    : 'bg-slate-950/40 border-slate-800/60 opacity-60'
+                    ? 'bg-gradient-to-br from-zinc-900 to-black border-yellow-400/50 shadow-md shadow-yellow-400/5'
+                    : 'bg-black/40 border-zinc-800/60 opacity-60'
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <span
                       className={`w-2.5 h-2.5 rounded-full ${
-                        court.active ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'
+                        court.active ? 'bg-yellow-400 animate-pulse' : 'bg-zinc-600'
                       }`}
                     />
-                    <span className="font-mono text-xs font-bold text-slate-400">
+                    <span className="font-mono text-xs font-bold text-zinc-400">
                       Pista #{court.id}
                     </span>
                   </div>
@@ -116,10 +116,10 @@ export const CourtSelectorModal: React.FC<CourtSelectorModalProps> = ({
                   <button
                     type="button"
                     onClick={() => handleToggleCourt(court.id)}
-                    className={`px-3 py-1 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+                    className={`px-3 py-1 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
                       court.active
-                        ? 'bg-emerald-500 text-slate-950 font-black'
-                        : 'bg-slate-800 text-slate-400 hover:text-white'
+                        ? 'bg-yellow-400 text-black font-black'
+                        : 'bg-zinc-800 text-zinc-400 hover:text-white'
                     }`}
                   >
                     {court.active && <Check className="w-3.5 h-3.5 stroke-[3]" />}
@@ -133,27 +133,27 @@ export const CourtSelectorModal: React.FC<CourtSelectorModalProps> = ({
                   value={court.name}
                   onChange={(e) => handleUpdateName(court.id, e.target.value)}
                   placeholder={`Nombre de Pista ${court.id}`}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 font-semibold"
+                  className="w-full bg-black border border-zinc-800 rounded-xl px-3 py-1.5 text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-yellow-400 font-semibold"
                 />
               </div>
             ))}
           </div>
 
           {/* Capacity pill */}
-          <div className="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-between text-xs">
-            <span className="text-slate-400 font-medium">Capacidad requerida:</span>
-            <span className="font-mono font-black text-emerald-400">
+          <div className="p-3.5 rounded-2xl bg-black border border-zinc-800 flex items-center justify-between text-xs">
+            <span className="text-zinc-400 font-medium">Capacidad requerida:</span>
+            <span className="font-mono font-black text-yellow-400">
               {activeCount} pistas activas = {playersRequired} jugadores por ronda
             </span>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-3.5 border-t border-slate-800 bg-slate-950/80 flex justify-end">
+        <div className="px-6 py-3.5 border-t border-zinc-800 bg-black flex justify-end">
           <button
             type="button"
             onClick={onClose}
-            className="px-6 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition"
+            className="px-6 py-2 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs transition cursor-pointer"
           >
             Guardar y Aplicar
           </button>
