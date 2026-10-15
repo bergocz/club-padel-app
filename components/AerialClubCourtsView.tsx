@@ -3,15 +3,21 @@
 import React, { useState } from 'react';
 import { OpenMatch, Player, MatchSlot } from '../types';
 import { ESPADEL_COURTS, AerialCourt } from '../data/courts';
+import { TIME_SLOTS_90MIN, TIME_SLOTS_60MIN, SCHEDULE_DATES, CLUB_HOURS } from '../data/schedule';
 import { LevelBadge } from './LevelBadge';
-import { Users, Plus, CheckCircle, ShieldCheck, MapPin, Sparkles, Clock, AlertCircle, X, ChevronRight, UserPlus } from 'lucide-react';
+import { 
+  Users, Plus, CheckCircle, ShieldCheck, MapPin, Sparkles, Clock, 
+  AlertCircle, X, ChevronRight, UserPlus, Calendar, Lock, Unlock,
+  Check, ArrowRight, Info
+} from 'lucide-react';
 
 interface AerialClubCourtsViewProps {
   matches: OpenMatch[];
   currentUser: Player;
   onJoinMatchSlot: (matchId: string, position: 1 | 2 | 3 | 4) => void;
   onLeaveMatchSlot: (matchId: string, position: 1 | 2 | 3 | 4) => void;
-  onOpenCreateMatchWithCourtNumber: (courtNumber: number) => void;
+  onOpenCreateMatchWithCourtNumber: (courtNumber: number, time?: string, date?: string) => void;
+  onBookCourtDirect?: (courtNumber: number, time: string, date: string, isPrivate: boolean) => void;
 }
 
 export const AerialClubCourtsView: React.FC<AerialClubCourtsViewProps> = ({
@@ -20,100 +26,325 @@ export const AerialClubCourtsView: React.FC<AerialClubCourtsViewProps> = ({
   onJoinMatchSlot,
   onLeaveMatchSlot,
   onOpenCreateMatchWithCourtNumber,
+  onBookCourtDirect,
 }) => {
+  // Date & Duration state
+  const [selectedDate, setSelectedDate] = useState<string>('Hoy, 15 Oct');
+  const [durationMinutes, setDurationMinutes] = useState<90 | 60>(90);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('19:00 - 20:30');
   const [selectedCourtNumber, setSelectedCourtNumber] = useState<number | null>(null);
+
+  // Quick booking modal for free courts
+  const [bookingModalCourt, setBookingModalCourt] = useState<AerialCourt | null>(null);
+  const [bookingFeedback, setBookingFeedback] = useState<string | null>(null);
+
+  // Time slot list according to duration
+  const activeSlots = durationMinutes === 90 ? TIME_SLOTS_90MIN : TIME_SLOTS_60MIN;
+
+  // Make sure selectedTimeSlot is valid when duration changes
+  const handleDurationChange = (duration: 90 | 60) => {
+    setDurationMinutes(duration);
+    if (duration === 90) {
+      setSelectedTimeSlot('19:00 - 20:30');
+    } else {
+      setSelectedTimeSlot('19:00 - 20:00');
+    }
+    setSelectedCourtNumber(null);
+  };
 
   // Group courts by Nave
   const naveACourts = ESPADEL_COURTS.filter(c => c.naveId === 'nave-a'); // 1 and 2
   const naveBCourts = ESPADEL_COURTS.filter(c => c.naveId === 'nave-b'); // 3, 4, 5, 6
 
-  // Helper to get active match for a court
-  const getMatchForCourt = (courtNumber: number) => {
-    return matches.find(m => m.courtName.includes(`Pista ${courtNumber}`));
+  // Helper to find match for a court at selected date and time
+  const getMatchForCourtAtSlot = (courtNumber: number) => {
+    return matches.find(m => {
+      const isSameCourt = m.courtName.includes(`Pista ${courtNumber}`);
+      const isSameDate = m.date === selectedDate;
+      const isSameTime = m.time.startsWith(selectedTimeSlot.split(' - ')[0]);
+      return isSameCourt && isSameDate && isSameTime;
+    });
   };
 
+  // Summary counts for currently selected time slot
+  const currentSlotMatches = ESPADEL_COURTS.map(c => getMatchForCourtAtSlot(c.number)).filter(Boolean) as OpenMatch[];
+  const totalOpenSlotsInClub = currentSlotMatches.reduce((acc, m) => acc + m.slots.filter(s => !s.player).length, 0);
+  const freeCourtsCount = 6 - currentSlotMatches.length;
+
   const selectedCourt = ESPADEL_COURTS.find(c => c.number === selectedCourtNumber);
-  const selectedMatch = selectedCourtNumber ? getMatchForCourt(selectedCourtNumber) : null;
+  const selectedMatch = selectedCourtNumber ? getMatchForCourtAtSlot(selectedCourtNumber) : null;
+
+  // Handle Quick Booking of a Free Court
+  const handleConfirmCourtBooking = (isPrivate: boolean) => {
+    if (!bookingModalCourt) return;
+    
+    if (isPrivate) {
+      const price = durationMinutes === 90 
+        ? Math.round(bookingModalCourt.priceHour * 1.5) 
+        : bookingModalCourt.priceHour;
+      setBookingFeedback(`¡Pista ${bookingModalCourt.number} reservada en exclusiva para el ${selectedDate} de ${selectedTimeSlot}! Total: ${price}€.`);
+      setBookingModalCourt(null);
+      setTimeout(() => setBookingFeedback(null), 5000);
+    } else {
+      // Open match creation
+      onOpenCreateMatchWithCourtNumber(bookingModalCourt.number, selectedTimeSlot, selectedDate);
+      setBookingModalCourt(null);
+    }
+  };
 
   return (
     <div className="space-y-6">
-      {/* Header and Legend */}
-      <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-5 shadow-2xl">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* 1. CLUB SCHEDULE & HORARIOS HEADER (07:00 a 23:00) */}
+      <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-5 shadow-2xl space-y-4">
+        {/* Top line info */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-900 pb-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="w-5 h-5 rounded-lg bg-yellow-400 text-black flex items-center justify-center font-black text-xs">
-                ⚡
-              </span>
+              <span className="w-2.5 h-2.5 rounded-full bg-yellow-400 animate-ping" />
               <span className="text-xs font-mono uppercase tracking-wider text-yellow-400 font-bold">
-                Plano Cenital Oficial • Espadel Club
+                Espadel Club • Horario Oficial 07:00 - 23:00
+              </span>
+              <span className="text-[10px] bg-yellow-400/10 text-yellow-300 px-2 py-0.5 rounded-full border border-yellow-400/20 font-mono">
+                Abierto Ahora
               </span>
             </div>
             <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-              Visión Aérea de Pistas (Nave A y Nave B)
+              Visión Aérea de Partidos Abiertos y Horarios Libres
             </h2>
-            <p className="text-xs text-zinc-400 mt-1 max-w-2xl leading-relaxed">
-              Selecciona cualquier pista interactiva para apuntarte. Si juegas de <strong>Revés</strong>, tu circulito se colocará en la <strong>izquierda</strong> de la pista; si juegas de <strong>Derecha (Drive)</strong>, en la <strong>derecha</strong>.
+            <p className="text-xs text-zinc-400 mt-0.5">
+              Haz clic en cualquier <strong>hueco abierto</strong> para apuntarte al partido o en una <strong>pista libre</strong> para reservarla.
             </p>
           </div>
 
-          {/* Quick Legend */}
-          <div className="flex flex-wrap items-center gap-2.5 bg-black/60 border border-zinc-800 p-3 rounded-2xl text-xs">
-            <div className="flex items-center gap-1.5">
-              <span className="w-3.5 h-3.5 rounded-full border-2 border-yellow-400 bg-yellow-400/20" />
-              <span className="text-zinc-300 font-semibold">Tú ({currentUser.sidePreference})</span>
+          {/* DURATION SELECTOR TOGGLE (90m habitual vs 60m) */}
+          <div className="flex items-center gap-2 bg-black border border-zinc-800 p-1.5 rounded-2xl self-start md:self-center">
+            <span className="text-[11px] font-mono text-zinc-400 pl-2 pr-1 font-semibold flex items-center gap-1">
+              <Clock className="w-3.5 h-3.5 text-yellow-400" /> Duración:
+            </span>
+            <button
+              onClick={() => handleDurationChange(90)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-black transition flex items-center gap-1.5 ${
+                durationMinutes === 90
+                  ? 'bg-yellow-400 text-black shadow-lg shadow-yellow-400/20'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+            >
+              <span>90 min (1h 30m)</span>
+              <span className="text-[9px] bg-black/20 text-black px-1.5 py-0.2 rounded font-mono uppercase font-bold">
+                Habitual
+              </span>
+            </button>
+            <button
+              onClick={() => handleDurationChange(60)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-black transition ${
+                durationMinutes === 60
+                  ? 'bg-yellow-400 text-black shadow-lg shadow-yellow-400/20'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+            >
+              <span>60 min (1h)</span>
+            </button>
+          </div>
+        </div>
+
+        {/* DATE SELECTOR BAR */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+          <span className="text-xs font-mono text-zinc-500 flex items-center gap-1 mr-1 shrink-0">
+            <Calendar className="w-3.5 h-3.5" /> Día:
+          </span>
+          {SCHEDULE_DATES.map(d => (
+            <button
+              key={d.date}
+              onClick={() => {
+                setSelectedDate(d.date);
+                setSelectedCourtNumber(null);
+              }}
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition shrink-0 flex items-center gap-2 ${
+                selectedDate === d.date
+                  ? 'bg-yellow-400 text-black shadow-md shadow-yellow-400/10'
+                  : 'bg-zinc-900 border border-zinc-800/80 text-zinc-300 hover:border-yellow-400/40 hover:text-white'
+              }`}
+            >
+              <span>{d.label}</span>
+              <span className={`text-[10px] font-mono ${selectedDate === d.date ? 'text-black/80 font-bold' : 'text-zinc-500'}`}>
+                {d.date.split(', ')[1]}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* TIMELINE HORARIOS SELECTOR (07:00 a 23:00) */}
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-mono text-zinc-400 font-semibold flex items-center gap-1.5">
+              <span>Franja Horaria ({CLUB_HOURS.open} - {CLUB_HOURS.close}):</span>
+              <strong className="text-yellow-400 font-bold">{selectedTimeSlot}</strong>
+            </span>
+            <div className="flex items-center gap-3 text-[11px] font-mono text-zinc-400">
+              <span className="flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-yellow-400" />
+                <strong className="text-yellow-400 font-bold">{totalOpenSlotsInClub}</strong> huecos abiertos
+              </span>
+              <span>•</span>
+              <span className="flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                <strong className="text-emerald-400 font-bold">{freeCourtsCount}</strong> pistas libres
+              </span>
             </div>
-            <span className="text-zinc-700">•</span>
-            <div className="flex items-center gap-1.5">
-              <span className="w-3.5 h-3.5 rounded-full border-2 border-white bg-zinc-800" />
-              <span className="text-zinc-400">Socio Apuntado</span>
-            </div>
-            <span className="text-zinc-700">•</span>
-            <div className="flex items-center gap-1.5">
-              <span className="w-3.5 h-3.5 rounded-full border border-dashed border-yellow-400/70" />
-              <span className="text-yellow-400 font-medium">Plaza Libre</span>
-            </div>
+          </div>
+
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin">
+            {activeSlots.map(slot => {
+              // Count open spots in this specific slot
+              const slotMatches = ESPADEL_COURTS.map(c => {
+                return matches.find(m => {
+                  return m.courtName.includes(`Pista ${c.number}`) &&
+                         m.date === selectedDate &&
+                         m.time.startsWith(slot.startTime);
+                });
+              }).filter(Boolean) as OpenMatch[];
+
+              const openSpots = slotMatches.reduce((acc, m) => acc + m.slots.filter(s => !s.player).length, 0);
+              const freeCourts = 6 - slotMatches.length;
+              const isSelected = selectedTimeSlot === slot.time;
+
+              return (
+                <button
+                  key={slot.id}
+                  onClick={() => {
+                    setSelectedTimeSlot(slot.time);
+                    setSelectedCourtNumber(null);
+                  }}
+                  className={`px-3 py-2 rounded-2xl transition shrink-0 flex flex-col items-center justify-center min-w-[105px] border ${
+                    isSelected
+                      ? 'bg-yellow-400 text-black border-yellow-400 shadow-lg shadow-yellow-400/20'
+                      : 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:border-yellow-400/40 hover:bg-zinc-850'
+                  }`}
+                >
+                  <span className={`text-xs font-black font-mono tracking-tight ${isSelected ? 'text-black' : 'text-white'}`}>
+                    {slot.startTime}
+                  </span>
+                  <span className={`text-[10px] font-mono ${isSelected ? 'text-black/80' : 'text-zinc-500'}`}>
+                    {slot.endTime}
+                  </span>
+
+                  {/* Slot Status Tag */}
+                  <div className="mt-1">
+                    {openSpots > 0 ? (
+                      <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-full ${
+                        isSelected 
+                          ? 'bg-black text-yellow-400 font-mono' 
+                          : 'bg-yellow-400/10 text-yellow-400 border border-yellow-400/20'
+                      }`}>
+                        {openSpots} {openSpots === 1 ? 'hueco' : 'huecos'}
+                      </span>
+                    ) : freeCourts === 6 ? (
+                      <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full ${
+                        isSelected 
+                          ? 'bg-black/20 text-black font-mono' 
+                          : 'bg-emerald-400/10 text-emerald-400 border border-emerald-400/20'
+                      }`}>
+                        Libre
+                      </span>
+                    ) : (
+                      <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full ${
+                        isSelected 
+                          ? 'bg-black/20 text-black' 
+                          : 'bg-zinc-800 text-zinc-400'
+                      }`}>
+                        {freeCourts} libres
+                      </span>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
 
-      {/* AERIAL BLUEPRINT GRID */}
+      {/* Booking Feedback Alert */}
+      {bookingFeedback && (
+        <div className="p-4 rounded-2xl bg-yellow-400/15 border-2 border-yellow-400 text-yellow-300 text-xs font-semibold flex items-center gap-2 animate-in fade-in duration-200">
+          <Check className="w-5 h-5 text-yellow-400 shrink-0" />
+          <span>{bookingFeedback}</span>
+        </div>
+      )}
+
+      {/* QUICK LEGEND & INSTRUCTIONS */}
+      <div className="flex flex-wrap items-center justify-between gap-3 px-2 text-xs">
+        <div className="flex items-center gap-2">
+          <span className="text-zinc-400 font-mono text-xs">Posición en pista:</span>
+          <span className="text-white font-bold bg-zinc-900 border border-zinc-800 px-2.5 py-1 rounded-xl">
+            Revés = Izquierda ⬅️
+          </span>
+          <span className="text-white font-bold bg-zinc-900 border border-zinc-800 px-2.5 py-1 rounded-xl">
+            Derecha (Drive) = Derecha ➡️
+          </span>
+        </div>
+
+        <div className="flex items-center gap-3 bg-zinc-950 border border-zinc-800 px-3 py-1.5 rounded-2xl">
+          <div className="flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded-full border-2 border-yellow-400 bg-yellow-400/20 animate-pulse" />
+            <span className="text-yellow-400 font-bold">Hueco Abierto</span>
+          </div>
+          <span className="text-zinc-700">•</span>
+          <div className="flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded-full border border-white bg-zinc-700" />
+            <span className="text-zinc-300 font-medium">Jugador</span>
+          </div>
+          <span className="text-zinc-700">•</span>
+          <div className="flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded-full border border-emerald-400 bg-emerald-400/20" />
+            <span className="text-emerald-400 font-medium">Pista Libre</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. AERIAL BLUEPRINT GRID (6 PISTAS EN AZUL OFICIAL) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* NAVE A: 2 PISTAS (Pistas 1 y 2 - Horizontales) */}
+        {/* NAVE 1 (SALA PRINCIPAL): 2 PISTAS (Pistas 1 y 2 - Horizontales) */}
         <div className="lg:col-span-5 space-y-4">
           <div className="flex items-center justify-between px-2">
             <div className="flex items-center gap-2">
               <span className="text-xs font-mono font-bold text-yellow-400 bg-yellow-400/10 px-2.5 py-1 rounded-xl border border-yellow-400/20">
                 NAVE 1 (SALA PRINCIPAL)
               </span>
-              <span className="text-xs text-zinc-400">2 Pistas Horizontales</span>
+              <span className="text-xs text-zinc-400">Pistas 1 y 2 (Horizontales)</span>
             </div>
           </div>
 
           <div className="bg-zinc-950 border border-zinc-800/90 rounded-3xl p-4 sm:p-5 shadow-xl space-y-5">
-            {naveACourts.map(court => (
-              <AerialCourtCanvas
-                key={court.id}
-                court={court}
-                match={getMatchForCourt(court.number)}
-                currentUser={currentUser}
-                isSelected={selectedCourtNumber === court.number}
-                onSelect={() => setSelectedCourtNumber(court.number)}
-                onJoinSlot={(pos) => {
-                  const m = getMatchForCourt(court.number);
-                  if (m) onJoinMatchSlot(m.id, pos);
-                  else onOpenCreateMatchWithCourtNumber(court.number);
-                }}
-                onLeaveSlot={(pos) => {
-                  const m = getMatchForCourt(court.number);
-                  if (m) onLeaveMatchSlot(m.id, pos);
-                }}
-              />
-            ))}
+            {naveACourts.map(court => {
+              const courtMatch = getMatchForCourtAtSlot(court.number);
+              return (
+                <AerialCourtCanvas
+                  key={court.id}
+                  court={court}
+                  match={courtMatch}
+                  selectedTime={selectedTimeSlot}
+                  selectedDate={selectedDate}
+                  currentUser={currentUser}
+                  isSelected={selectedCourtNumber === court.number}
+                  onSelect={() => setSelectedCourtNumber(court.number)}
+                  onJoinSlot={(pos) => {
+                    if (courtMatch) {
+                      onJoinMatchSlot(courtMatch.id, pos);
+                    } else {
+                      setBookingModalCourt(court);
+                    }
+                  }}
+                  onLeaveSlot={(pos) => {
+                    if (courtMatch) onLeaveMatchSlot(courtMatch.id, pos);
+                  }}
+                  onOpenBookingModal={() => setBookingModalCourt(court)}
+                />
+              );
+            })}
           </div>
         </div>
 
-        {/* NAVE B: 4 PISTAS (Pistas 3, 4, 5, 6 - Pista 4 Vertical) */}
+        {/* NAVE 2 (SALA ANEXA): 4 PISTAS (Pistas 3, 5, 6 Horizontales; Pista 4 VERTICAL) */}
         <div className="lg:col-span-7 space-y-4">
           <div className="flex items-center justify-between px-2">
             <div className="flex items-center gap-2">
@@ -125,83 +356,95 @@ export const AerialClubCourtsView: React.FC<AerialClubCourtsViewProps> = ({
           </div>
 
           <div className="bg-zinc-950 border border-zinc-800/90 rounded-3xl p-4 sm:p-5 shadow-xl">
-            {/* Layout for Nave B: 
-                Left Column: Pista 3 (Horiz) & Pista 5 (Horiz)
-                Middle Column: Pista 4 (VERTICAL)
-                Right Column: Pista 6 (Horiz) 
-            */}
+            {/* Grid for Nave B: Left column (Pista 3 y 5 Horizontales), Right column (Pista 4 Vertical y Pista 6 Horizontal) */}
             <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-stretch">
-              {/* Horizontal Column Left (Pista 3 & Pista 5) */}
+              {/* Left Column: Pista 3 & Pista 5 */}
               <div className="md:col-span-6 space-y-4 flex flex-col justify-between">
+                {/* Pista 3 */}
                 <AerialCourtCanvas
-                  court={naveBCourts[0]} // Pista 3
-                  match={getMatchForCourt(3)}
+                  court={naveBCourts[0]}
+                  match={getMatchForCourtAtSlot(3)}
+                  selectedTime={selectedTimeSlot}
+                  selectedDate={selectedDate}
                   currentUser={currentUser}
                   isSelected={selectedCourtNumber === 3}
                   onSelect={() => setSelectedCourtNumber(3)}
                   onJoinSlot={(pos) => {
-                    const m = getMatchForCourt(3);
+                    const m = getMatchForCourtAtSlot(3);
                     if (m) onJoinMatchSlot(m.id, pos);
-                    else onOpenCreateMatchWithCourtNumber(3);
+                    else setBookingModalCourt(naveBCourts[0]);
                   }}
                   onLeaveSlot={(pos) => {
-                    const m = getMatchForCourt(3);
+                    const m = getMatchForCourtAtSlot(3);
                     if (m) onLeaveMatchSlot(m.id, pos);
                   }}
+                  onOpenBookingModal={() => setBookingModalCourt(naveBCourts[0])}
                 />
 
+                {/* Pista 5 */}
                 <AerialCourtCanvas
-                  court={naveBCourts[2]} // Pista 5
-                  match={getMatchForCourt(5)}
+                  court={naveBCourts[2]}
+                  match={getMatchForCourtAtSlot(5)}
+                  selectedTime={selectedTimeSlot}
+                  selectedDate={selectedDate}
                   currentUser={currentUser}
                   isSelected={selectedCourtNumber === 5}
                   onSelect={() => setSelectedCourtNumber(5)}
                   onJoinSlot={(pos) => {
-                    const m = getMatchForCourt(5);
+                    const m = getMatchForCourtAtSlot(5);
                     if (m) onJoinMatchSlot(m.id, pos);
-                    else onOpenCreateMatchWithCourtNumber(5);
+                    else setBookingModalCourt(naveBCourts[2]);
                   }}
                   onLeaveSlot={(pos) => {
-                    const m = getMatchForCourt(5);
+                    const m = getMatchForCourtAtSlot(5);
                     if (m) onLeaveMatchSlot(m.id, pos);
                   }}
+                  onOpenBookingModal={() => setBookingModalCourt(naveBCourts[2])}
                 />
               </div>
 
-              {/* Center Column: PISTA 4 (VERTICAL ESPECÍFICA) */}
+              {/* Right Column: Pista 4 (VERTICAL) & Pista 6 (Horizontal) */}
               <div className="md:col-span-6 space-y-4 flex flex-col justify-between">
+                {/* Pista 4 (VERTICAL ESPECÍFICA) */}
                 <AerialCourtCanvas
-                  court={naveBCourts[1]} // Pista 4 (Vertical)
-                  match={getMatchForCourt(4)}
+                  court={naveBCourts[1]} // Pista 4 Vertical
+                  match={getMatchForCourtAtSlot(4)}
+                  selectedTime={selectedTimeSlot}
+                  selectedDate={selectedDate}
                   currentUser={currentUser}
                   isSelected={selectedCourtNumber === 4}
                   onSelect={() => setSelectedCourtNumber(4)}
                   onJoinSlot={(pos) => {
-                    const m = getMatchForCourt(4);
+                    const m = getMatchForCourtAtSlot(4);
                     if (m) onJoinMatchSlot(m.id, pos);
-                    else onOpenCreateMatchWithCourtNumber(4);
+                    else setBookingModalCourt(naveBCourts[1]);
                   }}
                   onLeaveSlot={(pos) => {
-                    const m = getMatchForCourt(4);
+                    const m = getMatchForCourtAtSlot(4);
                     if (m) onLeaveMatchSlot(m.id, pos);
                   }}
+                  onOpenBookingModal={() => setBookingModalCourt(naveBCourts[1])}
                 />
 
+                {/* Pista 6 */}
                 <AerialCourtCanvas
-                  court={naveBCourts[3]} // Pista 6 (Horizontal)
-                  match={getMatchForCourt(6)}
+                  court={naveBCourts[3]} // Pista 6 Horizontal
+                  match={getMatchForCourtAtSlot(6)}
+                  selectedTime={selectedTimeSlot}
+                  selectedDate={selectedDate}
                   currentUser={currentUser}
                   isSelected={selectedCourtNumber === 6}
                   onSelect={() => setSelectedCourtNumber(6)}
                   onJoinSlot={(pos) => {
-                    const m = getMatchForCourt(6);
+                    const m = getMatchForCourtAtSlot(6);
                     if (m) onJoinMatchSlot(m.id, pos);
-                    else onOpenCreateMatchWithCourtNumber(6);
+                    else setBookingModalCourt(naveBCourts[3]);
                   }}
                   onLeaveSlot={(pos) => {
-                    const m = getMatchForCourt(6);
+                    const m = getMatchForCourtAtSlot(6);
                     if (m) onLeaveMatchSlot(m.id, pos);
                   }}
+                  onOpenBookingModal={() => setBookingModalCourt(naveBCourts[3])}
                 />
               </div>
             </div>
@@ -209,10 +452,10 @@ export const AerialClubCourtsView: React.FC<AerialClubCourtsViewProps> = ({
         </div>
       </div>
 
-      {/* Selected Court Detail Bottom Card / Action Drawer */}
+      {/* 3. SELECTED COURT BOTTOM ACTION BAR */}
       {selectedCourt && (
-        <div className="bg-zinc-950 border-2 border-yellow-400/40 rounded-3xl p-5 shadow-2xl animate-in fade-in slide-in-from-bottom-2 duration-200">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="bg-zinc-950 border-2 border-yellow-400 rounded-3xl p-5 shadow-2xl animate-in fade-in slide-in-from-bottom-2 duration-200">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-2xl bg-yellow-400 text-black flex items-center justify-center font-black text-xl shadow-lg shadow-yellow-400/20">
                 {selectedCourt.number}
@@ -227,35 +470,33 @@ export const AerialClubCourtsView: React.FC<AerialClubCourtsViewProps> = ({
                 <div className="text-xs text-zinc-400 flex items-center gap-2 mt-0.5">
                   <span>{selectedCourt.nave}</span>
                   <span>•</span>
-                  <span>{selectedCourt.orientation === 'vertical' ? 'Disposición Vertical' : 'Disposición Horizontal'}</span>
+                  <span>Horario: <strong className="text-yellow-400">{selectedTimeSlot}</strong> ({selectedDate})</span>
                   <span>•</span>
-                  <span className="text-yellow-400 font-bold font-mono">{selectedCourt.priceHour}€/h</span>
+                  <span className="text-white font-mono font-bold">{selectedCourt.priceHour}€/hora</span>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               {selectedMatch ? (
                 <div className="flex items-center gap-3">
                   <div className="text-right hidden sm:block">
                     <div className="text-xs text-zinc-300 font-mono font-bold">
                       {selectedMatch.slots.filter(s => !!s.player).length}/4 Jugadores
                     </div>
-                    <div className="text-[11px] text-zinc-500 font-mono">
+                    <div className="text-[11px] text-zinc-400 font-mono">
                       Nivel {selectedMatch.minLevel.toFixed(1)} - {selectedMatch.maxLevel.toFixed(1)}
                     </div>
                   </div>
 
                   {selectedMatch.slots.some(s => s.player?.id === currentUser.id) ? (
-                    <div className="px-4 py-2 rounded-xl bg-yellow-400/10 border border-yellow-400/30 text-yellow-400 font-bold text-xs flex items-center gap-1.5">
-                      <CheckCircle className="w-4 h-4" /> Estás apuntado en esta pista
+                    <div className="px-4 py-2.5 rounded-xl bg-yellow-400/10 border border-yellow-400/30 text-yellow-400 font-bold text-xs flex items-center gap-1.5">
+                      <CheckCircle className="w-4 h-4" /> Ya estás en esta pista
                     </div>
                   ) : selectedMatch.slots.some(s => !s.player) ? (
                     <button
                       onClick={() => {
-                        // Join matching position based on user preference
                         const targetSide = currentUser.sidePreference;
-                        // Find empty slot matching preference if possible
                         let emptySlot = selectedMatch.slots.find(s => {
                           if (s.player) return false;
                           const posSide = (s.position === 1 || s.position === 3) ? 'Revés' : 'Drive';
@@ -266,21 +507,24 @@ export const AerialClubCourtsView: React.FC<AerialClubCourtsViewProps> = ({
                       }}
                       className="px-5 py-2.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs shadow-lg shadow-yellow-400/20 transition flex items-center gap-1.5"
                     >
-                      <UserPlus className="w-4 h-4" /> Apuntarme en {currentUser.sidePreference === 'Revés' ? 'Revés (Izquierda)' : 'Derecha (Drive)'}
+                      <UserPlus className="w-4 h-4" /> 
+                      Apuntarme en {currentUser.sidePreference === 'Revés' ? 'Revés (Izquierda)' : 'Derecha (Drive)'} • {selectedMatch.pricePerPlayer}€
                     </button>
                   ) : (
-                    <div className="px-4 py-2 rounded-xl bg-zinc-900 text-zinc-400 text-xs font-semibold">
+                    <div className="px-4 py-2.5 rounded-xl bg-zinc-900 text-zinc-400 text-xs font-semibold">
                       Pista Completa
                     </div>
                   )}
                 </div>
               ) : (
-                <button
-                  onClick={() => onOpenCreateMatchWithCourtNumber(selectedCourt.number)}
-                  className="px-5 py-2.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs shadow-lg shadow-yellow-400/20 transition flex items-center gap-1.5"
-                >
-                  <Plus className="w-4 h-4" /> Abrir Partido en Pista {selectedCourt.number}
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setBookingModalCourt(selectedCourt)}
+                    className="px-5 py-2.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs shadow-lg shadow-yellow-400/20 transition flex items-center gap-1.5"
+                  >
+                    <Plus className="w-4 h-4 stroke-[3]" /> Reservar o Abrir Partido
+                  </button>
+                </div>
               )}
 
               <button
@@ -288,6 +532,86 @@ export const AerialClubCourtsView: React.FC<AerialClubCourtsViewProps> = ({
                 className="w-8 h-8 rounded-full bg-zinc-900 hover:bg-zinc-800 flex items-center justify-center text-zinc-400 hover:text-white"
               >
                 <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 4. MODAL RÁPIDO PARA RESERVAR PISTA LIBRE O ABRIR PARTIDO */}
+      {bookingModalCourt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-zinc-950 border-2 border-yellow-400/60 rounded-3xl max-w-lg w-full p-6 shadow-2xl relative space-y-5">
+            <button
+              onClick={() => setBookingModalCourt(null)}
+              className="absolute top-5 right-5 w-8 h-8 rounded-full bg-zinc-900 hover:bg-zinc-800 flex items-center justify-center text-zinc-400 hover:text-white"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-xs font-mono uppercase tracking-wider text-emerald-400 font-bold">
+                  Pista Disponible
+                </span>
+              </div>
+              <h3 className="text-xl font-black text-white">
+                Reservar {bookingModalCourt.name}
+              </h3>
+              <p className="text-xs text-zinc-400 mt-1">
+                Franja: <strong className="text-yellow-400">{selectedTimeSlot}</strong> ({durationMinutes} min) • {selectedDate}
+              </p>
+            </div>
+
+            {/* Selection between Open Match vs Private Booking */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              {/* Option A: Abrir Partido Abierto */}
+              <button
+                onClick={() => handleConfirmCourtBooking(false)}
+                className="group p-4 rounded-2xl bg-zinc-900/90 border border-zinc-800 hover:border-yellow-400 transition text-left flex flex-col justify-between"
+              >
+                <div>
+                  <div className="w-8 h-8 rounded-xl bg-yellow-400/10 text-yellow-400 flex items-center justify-center mb-3 group-hover:bg-yellow-400 group-hover:text-black transition">
+                    <Users className="w-4 h-4" />
+                  </div>
+                  <h4 className="text-sm font-bold text-white group-hover:text-yellow-400 transition">
+                    Abrir Partido
+                  </h4>
+                  <p className="text-xs text-zinc-400 mt-1 leading-relaxed">
+                    Te apuntas tú en tu posición ({currentUser.sidePreference}) y dejas <strong>3 huecos abiertos</strong> para que otros socios del club se sumen por nivel.
+                  </p>
+                </div>
+                <div className="mt-4 pt-3 border-t border-zinc-800 flex items-center justify-between">
+                  <span className="text-xs font-mono font-bold text-yellow-400">
+                    Solo pagas tu parte (~{Math.round(bookingModalCourt.priceHour * (durationMinutes / 60) / 4)}€)
+                  </span>
+                  <ArrowRight className="w-4 h-4 text-zinc-500 group-hover:text-yellow-400 group-hover:translate-x-1 transition" />
+                </div>
+              </button>
+
+              {/* Option B: Reserva Privada Completa */}
+              <button
+                onClick={() => handleConfirmCourtBooking(true)}
+                className="group p-4 rounded-2xl bg-zinc-900/90 border border-zinc-800 hover:border-emerald-400 transition text-left flex flex-col justify-between"
+              >
+                <div>
+                  <div className="w-8 h-8 rounded-xl bg-emerald-400/10 text-emerald-400 flex items-center justify-center mb-3 group-hover:bg-emerald-400 group-hover:text-black transition">
+                    <Lock className="w-4 h-4" />
+                  </div>
+                  <h4 className="text-sm font-bold text-white group-hover:text-emerald-400 transition">
+                    Reserva Privada
+                  </h4>
+                  <p className="text-xs text-zinc-400 mt-1 leading-relaxed">
+                    Reserva la pista completa para tu grupo de 4 amigos. Nadie más podrá unirse desde la app.
+                  </p>
+                </div>
+                <div className="mt-4 pt-3 border-t border-zinc-800 flex items-center justify-between">
+                  <span className="text-xs font-mono font-bold text-emerald-400">
+                    Total: {durationMinutes === 90 ? Math.round(bookingModalCourt.priceHour * 1.5) : bookingModalCourt.priceHour}€
+                  </span>
+                  <ArrowRight className="w-4 h-4 text-zinc-500 group-hover:text-emerald-400 group-hover:translate-x-1 transition" />
+                </div>
               </button>
             </div>
           </div>
@@ -302,21 +626,27 @@ export const AerialClubCourtsView: React.FC<AerialClubCourtsViewProps> = ({
 interface AerialCourtCanvasProps {
   court: AerialCourt;
   match?: OpenMatch;
+  selectedTime: string;
+  selectedDate: string;
   currentUser: Player;
   isSelected: boolean;
   onSelect: () => void;
   onJoinSlot: (position: 1 | 2 | 3 | 4) => void;
   onLeaveSlot: (position: 1 | 2 | 3 | 4) => void;
+  onOpenBookingModal: () => void;
 }
 
 const AerialCourtCanvas: React.FC<AerialCourtCanvasProps> = ({
   court,
   match,
+  selectedTime,
+  selectedDate,
   currentUser,
   isSelected,
   onSelect,
   onJoinSlot,
   onLeaveSlot,
+  onOpenBookingModal,
 }) => {
   const isVertical = court.orientation === 'vertical';
 
@@ -325,6 +655,9 @@ const AerialCourtCanvas: React.FC<AerialCourtCanvasProps> = ({
   const slot2 = match?.slots.find(s => s.position === 2); // Team A Drive (Right)
   const slot3 = match?.slots.find(s => s.position === 3); // Team B Revés (Left)
   const slot4 = match?.slots.find(s => s.position === 4); // Team B Drive (Right)
+
+  const openSpotsCount = match ? match.slots.filter(s => !s.player).length : 4;
+  const isFullyBooked = match && openSpotsCount === 0;
 
   return (
     <div
@@ -342,17 +675,37 @@ const AerialCourtCanvas: React.FC<AerialCourtCanvasProps> = ({
             {court.number}
           </div>
           <span className="font-bold text-xs text-white truncate">{court.name}</span>
+          {isVertical && (
+            <span className="text-[9px] font-mono uppercase bg-yellow-400/15 text-yellow-400 px-1.5 py-0.2 rounded border border-yellow-400/30">
+              Vertical
+            </span>
+          )}
         </div>
 
+        {/* Status Badge */}
         <div className="flex items-center gap-1.5">
           {match ? (
-            <span className="text-[10px] font-mono font-bold text-zinc-300 bg-zinc-800/80 px-2 py-0.5 rounded-full border border-zinc-700">
-              {match.slots.filter(s => !!s.player).length}/4
-            </span>
+            openSpotsCount > 0 ? (
+              <span className="text-[10px] font-mono font-bold text-yellow-400 bg-yellow-400/10 px-2 py-0.5 rounded-full border border-yellow-400/30 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-ping" />
+                {openSpotsCount} {openSpotsCount === 1 ? 'hueco libre' : 'huecos libres'}
+              </span>
+            ) : (
+              <span className="text-[10px] font-mono font-bold text-zinc-400 bg-zinc-800/80 px-2 py-0.5 rounded-full border border-zinc-700">
+                Pista Llena (4/4)
+              </span>
+            )
           ) : (
-            <span className="text-[10px] font-mono text-yellow-400 bg-yellow-400/10 px-2 py-0.5 rounded-full border border-yellow-400/20">
-              Libre
-            </span>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpenBookingModal();
+              }}
+              className="text-[10px] font-mono font-bold text-emerald-400 hover:text-black hover:bg-emerald-400 bg-emerald-400/10 px-2.5 py-0.5 rounded-full border border-emerald-400/30 transition flex items-center gap-1"
+            >
+              <span>Libre</span>
+              <span>• Reservar</span>
+            </button>
           )}
         </div>
       </div>
@@ -360,7 +713,7 @@ const AerialCourtCanvas: React.FC<AerialCourtCanvasProps> = ({
       {/* AERIAL BLUEPRINT (Azul reglamentario WPT) */}
       <div
         className={`relative w-full rounded-2xl overflow-hidden border-2 border-sky-400/40 shadow-inner flex flex-col justify-center items-center ${
-          isVertical ? 'aspect-[1/1.6] max-h-96' : 'aspect-[2.2/1] min-h-[140px]'
+          isVertical ? 'aspect-[1/1.6] max-h-96' : 'aspect-[2.2/1] min-h-[145px]'
         }`}
         style={{
           backgroundColor: '#1d4ed8', // Official Royal Court Blue
@@ -390,16 +743,10 @@ const AerialCourtCanvas: React.FC<AerialCourtCanvasProps> = ({
             <div className="absolute left-[72%] right-2 top-1/2 h-px bg-white/40 pointer-events-none" />
 
             {/* PLAYER CIRCLES PLACEMENT (HORIZ):
-                Team A (Left side of court):
-                  - Upper/Left spot = Revés (Lado izquierdo)
-                  - Lower/Right spot = Derecha (Lado derecho)
-                Team B (Right side of court):
-                  - Upper spot = Derecha
-                  - Lower spot = Revés
-                To strictly follow user's rule:
+                Strict rule from user:
                 "Si eres derecha, que salga el circulito en la derecha de la pista y si eres revés, en la izquierda de la pista":
-                Left side of each quadrant = Revés (Izquierda)
-                Right side of each quadrant = Derecha (Derecha)
+                - Lado izquierdo = Revés
+                - Lado derecho = Derecha (Drive)
             */}
             <div className="absolute inset-2 grid grid-cols-2 z-20 pointer-events-auto">
               {/* Team A Half (Left half of court) */}
@@ -456,7 +803,7 @@ const AerialCourtCanvas: React.FC<AerialCourtCanvasProps> = ({
             </div>
           </>
         ) : (
-          /* VERTICAL COURT LAYOUT (Pista 4 - Lines & Net) */
+          /* VERTICAL COURT LAYOUT (PISTA 4 ESPECÍFICA) */
           <>
             {/* Center Net Line (Horizontal) */}
             <div className="absolute left-2 right-2 top-1/2 h-1 -translate-y-1/2 bg-white/90 shadow-md flex items-center justify-center pointer-events-none z-10">
@@ -466,22 +813,22 @@ const AerialCourtCanvas: React.FC<AerialCourtCanvasProps> = ({
             </div>
 
             {/* Service Lines Team A (Top Half) */}
-            <div className="absolute left-2 right-2 top-[30%] h-px bg-white/40 pointer-events-none" />
-            <div className="absolute top-2 bottom-[70%] left-1/2 w-px bg-white/40 pointer-events-none" />
+            <div className="absolute left-2 right-2 top-[28%] h-px bg-white/40 pointer-events-none" />
+            <div className="absolute top-2 bottom-[72%] left-1/2 w-px bg-white/40 pointer-events-none" />
 
             {/* Service Lines Team B (Bottom Half) */}
-            <div className="absolute left-2 right-2 bottom-[30%] h-px bg-white/40 pointer-events-none" />
-            <div className="absolute top-[70%] bottom-2 left-1/2 w-px bg-white/40 pointer-events-none" />
+            <div className="absolute left-2 right-2 bottom-[28%] h-px bg-white/40 pointer-events-none" />
+            <div className="absolute top-[72%] bottom-2 left-1/2 w-px bg-white/40 pointer-events-none" />
 
             {/* PLAYER CIRCLES PLACEMENT (VERTICAL):
-                Left side of court = Revés
-                Right side of court = Derecha (Drive)
+                Top half (Team A): Left = Revés (Izquierda), Right = Drive (Derecha)
+                Bottom half (Team B): Left = Revés (Izquierda), Right = Drive (Derecha)
             */}
             <div className="absolute inset-2 grid grid-rows-2 z-20 pointer-events-auto">
-              {/* Team A (Top Half) */}
-              <div className="grid grid-cols-2 p-2 items-center">
-                {/* Left: Revés */}
-                <div className="flex justify-start">
+              {/* Top Half (Team A) */}
+              <div className="grid grid-cols-2 p-2">
+                {/* Slot 1: Revés (Izquierda arriba) */}
+                <div className="flex items-start justify-start">
                   <PlayerCircle
                     position={1}
                     side="Revés"
@@ -491,8 +838,8 @@ const AerialCourtCanvas: React.FC<AerialCourtCanvasProps> = ({
                     onLeave={() => onLeaveSlot(1)}
                   />
                 </div>
-                {/* Right: Derecha */}
-                <div className="flex justify-end">
+                {/* Slot 2: Drive (Derecha arriba) */}
+                <div className="flex items-start justify-end">
                   <PlayerCircle
                     position={2}
                     side="Drive"
@@ -504,10 +851,10 @@ const AerialCourtCanvas: React.FC<AerialCourtCanvasProps> = ({
                 </div>
               </div>
 
-              {/* Team B (Bottom Half) */}
-              <div className="grid grid-cols-2 p-2 items-center">
-                {/* Left: Revés */}
-                <div className="flex justify-start">
+              {/* Bottom Half (Team B) */}
+              <div className="grid grid-cols-2 p-2">
+                {/* Slot 3: Revés (Izquierda abajo) */}
+                <div className="flex items-end justify-start">
                   <PlayerCircle
                     position={3}
                     side="Revés"
@@ -517,8 +864,8 @@ const AerialCourtCanvas: React.FC<AerialCourtCanvasProps> = ({
                     onLeave={() => onLeaveSlot(3)}
                   />
                 </div>
-                {/* Right: Derecha */}
-                <div className="flex justify-end">
+                {/* Slot 4: Drive (Derecha abajo) */}
+                <div className="flex items-end justify-end">
                   <PlayerCircle
                     position={4}
                     side="Drive"
@@ -532,17 +879,31 @@ const AerialCourtCanvas: React.FC<AerialCourtCanvasProps> = ({
             </div>
           </>
         )}
+      </div>
 
-        {/* Small corner court glass badges */}
-        <div className="absolute bottom-1 right-2 text-[9px] font-mono text-white/50 font-semibold pointer-events-none">
-          {court.surface.replace(' Oficial', '')}
+      {/* Court Bottom Footer with Match Info / Action */}
+      <div className="mt-2.5 flex items-center justify-between text-[11px] px-1">
+        {match ? (
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-zinc-400">Nivel {match.minLevel.toFixed(1)} - {match.maxLevel.toFixed(1)}</span>
+            <span className="text-zinc-600">•</span>
+            <span className="font-mono text-yellow-400 font-bold">{match.pricePerPlayer}€/jugador</span>
+          </div>
+        ) : (
+          <div className="text-emerald-400 font-mono flex items-center gap-1">
+            <Unlock className="w-3 h-3" /> Pista Disponible a las {selectedTime}
+          </div>
+        )}
+
+        <div className="text-zinc-400 font-mono text-[10px]">
+          {court.nave.split(' ')[0]} {court.nave.split(' ')[1]}
         </div>
       </div>
     </div>
   );
 };
 
-/* --- PLAYER CIRCLE ON AERIAL COURT --- */
+/* --- CIRCULITO DEL JUGADOR O HUECO ABIERTO --- */
 
 interface PlayerCircleProps {
   position: 1 | 2 | 3 | 4;
@@ -561,52 +922,52 @@ const PlayerCircle: React.FC<PlayerCircleProps> = ({
   onJoin,
   onLeave,
 }) => {
+  const isOccupied = !!slot?.player;
   const isMe = slot?.player?.id === currentUser.id;
 
-  if (slot?.player) {
+  if (isOccupied && slot?.player) {
+    const player = slot.player;
     return (
-      <div className="relative group/player flex flex-col items-center">
-        {/* Avatar Circle */}
+      <div className="group relative flex flex-col items-center">
+        {/* Occupied Player Circle */}
         <div
-          className={`relative w-8 h-8 sm:w-9 sm:h-9 rounded-full overflow-hidden shadow-lg transition-transform hover:scale-110 ${
+          className={`relative w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden shadow-lg transition-transform group-hover:scale-110 flex items-center justify-center ${
             isMe
-              ? 'ring-2 ring-yellow-400 ring-offset-1 ring-offset-blue-900 scale-105'
-              : 'ring-1 ring-white/80'
+              ? 'ring-2 ring-yellow-400 ring-offset-2 ring-offset-blue-900 shadow-yellow-400/50'
+              : 'ring-2 ring-white ring-offset-1 ring-offset-blue-900'
           }`}
-          title={`${slot.player.name} (${side} · Niv. ${slot.player.level.toFixed(1)})`}
         >
           <img
-            src={slot.player.avatar}
-            alt={slot.player.name}
+            src={player.avatar}
+            alt={player.name}
             className="w-full h-full object-cover"
           />
 
-          {/* Level Badge in mini dot */}
-          <div className="absolute bottom-0 right-0 bg-black/90 text-yellow-400 text-[8px] font-mono font-bold px-1 rounded-tl">
-            {slot.player.level.toFixed(1)}
+          {/* Level mini badge */}
+          <div className="absolute -bottom-0.5 right-0 bg-black/90 text-yellow-400 font-black text-[8px] font-mono px-1 rounded-full border border-yellow-400/40">
+            {player.level.toFixed(1)}
           </div>
         </div>
 
-        {/* Position Label Tag below circle */}
-        <span
-          className={`text-[8px] font-mono uppercase tracking-tighter px-1 py-0.2 rounded mt-0.5 font-bold shadow ${
-            isMe
-              ? 'bg-yellow-400 text-black'
-              : 'bg-black/80 text-white border border-white/20'
-          }`}
-        >
-          {side === 'Revés' ? 'REVÉS' : 'DRIVE'}
-        </span>
+        {/* Name and Side Tag Below Circle */}
+        <div className="mt-0.5 flex flex-col items-center">
+          <span className="text-[9px] font-bold text-white max-w-[65px] truncate drop-shadow-md">
+            {isMe ? 'Tú' : player.name.split(' ')[0]}
+          </span>
+          <span className="text-[7px] font-mono uppercase text-yellow-300 font-bold drop-shadow">
+            {side} ({side === 'Revés' ? 'Izq' : 'Der'})
+          </span>
+        </div>
 
-        {/* Hover Leave Action if me */}
+        {/* Leave tooltip if it's me */}
         {isMe && (
           <button
             onClick={(e) => {
               e.stopPropagation();
               onLeave();
             }}
-            className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center opacity-0 group-hover/player:opacity-100 transition shadow"
-            title="Liberar mi plaza"
+            className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-600 hover:bg-red-500 text-white flex items-center justify-center text-[10px] shadow"
+            title="Salirme del partido"
           >
             ×
           </button>
@@ -615,23 +976,29 @@ const PlayerCircle: React.FC<PlayerCircleProps> = ({
     );
   }
 
-  // EMPTY SLOT INTERACTIVE CIRCLE
+  // EMPTY / OPEN SPOT ("HUECO ABIERTO")
   return (
-    <button
+    <div
       onClick={(e) => {
         e.stopPropagation();
         onJoin();
       }}
-      className="flex flex-col items-center group/slot transition-transform hover:scale-110"
-      title={`Apuntarme en ${side === 'Revés' ? 'Revés (Izquierda)' : 'Derecha (Drive)'}`}
+      className="group relative flex flex-col items-center cursor-pointer"
     >
-      <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-2 border-dashed border-white/70 hover:border-yellow-400 bg-black/30 hover:bg-yellow-400/20 backdrop-blur-sm flex items-center justify-center text-white/80 group-hover/slot:text-yellow-400 shadow transition">
-        <Plus className="w-4 h-4 stroke-[2.5]" />
+      {/* Dashed Animated Circle */}
+      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-dashed border-yellow-300 bg-yellow-400/25 hover:bg-yellow-400/45 group-hover:border-yellow-400 flex items-center justify-center shadow-lg transition-all group-hover:scale-110 animate-pulse">
+        <Plus className="w-4 h-4 text-yellow-300 group-hover:text-black group-hover:scale-125 transition" strokeWidth={3} />
       </div>
 
-      <span className="text-[8px] font-mono uppercase tracking-tighter px-1 py-0.2 rounded mt-0.5 font-semibold bg-black/60 text-white/70 group-hover/slot:bg-yellow-400 group-hover/slot:text-black transition">
-        {side === 'Revés' ? 'REVÉS (IZQ)' : 'DERECHA'}
-      </span>
-    </button>
+      {/* Side Label */}
+      <div className="mt-0.5 flex flex-col items-center">
+        <span className="text-[8px] font-mono font-bold text-yellow-300 group-hover:text-white uppercase drop-shadow">
+          {side}
+        </span>
+        <span className="text-[7px] font-mono text-zinc-300">
+          {side === 'Revés' ? 'Izquierda' : 'Derecha'}
+        </span>
+      </div>
+    </div>
   );
 };

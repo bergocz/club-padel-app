@@ -29,6 +29,9 @@ export default function HomePage() {
   const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isCreateMatchOpen, setIsCreateMatchOpen] = useState(false);
+  const [createMatchCourtNumber, setCreateMatchCourtNumber] = useState<number | null>(null);
+  const [createMatchTime, setCreateMatchTime] = useState<string | undefined>(undefined);
+  const [createMatchDate, setCreateMatchDate] = useState<string | undefined>(undefined);
   const [isB2BOpen, setIsB2BOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
@@ -303,7 +306,10 @@ export default function HomePage() {
             currentUser={currentUser}
             onJoinMatchSlot={handleJoinSlot}
             onLeaveMatchSlot={handleLeaveSlot}
-            onOpenCreateMatchWithCourtNumber={(courtNum) => {
+            onOpenCreateMatchWithCourtNumber={(courtNum, time, date) => {
+              setCreateMatchCourtNumber(courtNum);
+              setCreateMatchTime(time);
+              setCreateMatchDate(date);
               setIsCreateMatchOpen(true);
             }}
           />
@@ -515,9 +521,17 @@ export default function HomePage() {
 
       <CreateMatchModal
         isOpen={isCreateMatchOpen}
-        onClose={() => setIsCreateMatchOpen(false)}
+        onClose={() => {
+          setIsCreateMatchOpen(false);
+          setCreateMatchCourtNumber(null);
+          setCreateMatchTime(undefined);
+          setCreateMatchDate(undefined);
+        }}
         currentUser={currentUser}
         onCreateMatch={handleCreateMatch}
+        initialCourtNumber={createMatchCourtNumber}
+        initialTime={createMatchTime}
+        initialDate={createMatchDate}
       />
 
       <B2BDemoDrawer

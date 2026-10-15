@@ -1,16 +1,20 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Court, OpenMatch, Player } from '../types';
-import { COURTS } from '../data/courts';
+import { COURTS, ESPADEL_COURTS } from '../data/courts';
+import { TIME_SLOTS_90MIN, TIME_SLOTS_60MIN, SCHEDULE_DATES } from '../data/schedule';
 import { LevelBadge } from './LevelBadge';
-import { X, Plus, Calendar, Clock, MapPin, Trophy, ShieldAlert } from 'lucide-react';
+import { X, Plus, Calendar, Clock, MapPin, Trophy, ShieldAlert, Sparkles } from 'lucide-react';
 
 interface CreateMatchModalProps {
   isOpen: boolean;
   onClose: () => void;
   currentUser: Player;
   onCreateMatch: (match: OpenMatch) => void;
+  initialCourtNumber?: number | null;
+  initialTime?: string;
+  initialDate?: string;
 }
 
 export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
@@ -18,9 +22,13 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
   onClose,
   currentUser,
   onCreateMatch,
+  initialCourtNumber,
+  initialTime,
+  initialDate,
 }) => {
   const [selectedCourt, setSelectedCourt] = useState<Court>(COURTS[0]);
   const [date, setDate] = useState('Hoy, 15 Oct');
+  const [durationMinutes, setDurationMinutes] = useState<90 | 60>(90);
   const [time, setTime] = useState('19:00 - 20:30');
   const [minLevel, setMinLevel] = useState(Math.max(1.0, Math.round((currentUser.level - 0.5) * 10) / 10));
   const [maxLevel, setMaxLevel] = useState(Math.min(7.0, Math.round((currentUser.level + 0.5) * 10) / 10));
@@ -28,12 +36,43 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
   const [notes, setNotes] = useState('Partido abierto Espadel, busco cerrar pista pronto.');
   const [preferredSide, setPreferredSide] = useState<'Revés' | 'Drive'>(currentUser.sidePreference === 'Drive' ? 'Drive' : 'Revés');
 
+  // React to initial props
+  useEffect(() => {
+    if (initialCourtNumber) {
+      const matchCourt = COURTS.find(c => c.name.includes(`Pista ${initialCourtNumber}`));
+      if (matchCourt) setSelectedCourt(matchCourt);
+    }
+    if (initialTime) {
+      setTime(initialTime);
+      if (initialTime.includes(' - ')) {
+        const [start, end] = initialTime.split(' - ');
+        // If 1 hour diff
+        const startH = parseInt(start.split(':')[0], 10);
+        const endH = parseInt(end.split(':')[0], 10);
+        if (endH - startH === 1) {
+          setDurationMinutes(60);
+        } else {
+          setDurationMinutes(90);
+        }
+      }
+    }
+    if (initialDate) {
+      setDate(initialDate);
+    }
+  }, [initialCourtNumber, initialTime, initialDate]);
+
   if (!isOpen) return null;
+
+  const activeTimeSlots = durationMinutes === 90 ? TIME_SLOTS_90MIN : TIME_SLOTS_60MIN;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const pricePerPlayer = Math.round((selectedCourt.priceHour * 1.5) / 4);
+    const pricePerHour = selectedCourt.priceHour || 28;
+    const pricePerPlayer = Math.round((pricePerHour * (durationMinutes / 60)) / 4);
+
+    // Slot placement: user joins at position 1 (Revés) or position 2 (Drive)
+    const userSlotPosition: 1 | 2 = preferredSide === 'Revés' ? 1 : 2;
 
     const newMatch: OpenMatch = {
       id: `match-${Date.now()}`,
@@ -41,8 +80,8 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
       courtType: selectedCourt.type,
       date,
       time,
-      durationMinutes: 90,
-      pricePerPlayer: pricePerPlayer || 7.5,
+      durationMinutes,
+      pricePerPlayer: pricePerPlayer || 7.0,
       minLevel,
       maxLevel,
       status: 'open',
@@ -52,12 +91,13 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
         {
           position: 1,
           team: 'A',
-          player: {
-            ...currentUser,
-            sidePreference: preferredSide
-          }
+          player: userSlotPosition === 1 ? { ...currentUser, sidePreference: 'Revés' } : undefined
         },
-        { position: 2, team: 'A', player: undefined },
+        {
+          position: 2,
+          team: 'A',
+          player: userSlotPosition === 2 ? { ...currentUser, sidePreference: 'Drive' } : undefined
+        },
         { position: 3, team: 'B', player: undefined },
         { position: 4, team: 'B', player: undefined },
       ]
@@ -69,12 +109,22 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg bg-zinc-950 border border-zinc-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-lg bg-zinc-950 border-2 border-yellow-400/40 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
         {/* Header */}
         <div className="px-6 py-5 border-b border-zinc-900 flex items-center justify-between bg-zinc-950/80">
           <div>
-            <h2 className="text-lg font-bold text-white tracking-tight">Crear Partido Abierto en Espadel Club</h2>
-            <p className="text-xs text-zinc-400">Reserva tu plaza y abre las otras 3 a los socios del club</p>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="w-2.5 h-2.5 rounded-full bg-yellow-400 animate-ping" />
+              <span className="text-xs font-mono uppercase tracking-wider text-yellow-400 font-bold">
+                Espadel Club • Nuevo Partido Abierto
+              </span>
+            </div>
+            <h2 className="text-lg font-black text-white tracking-tight">
+              Abrir Partido con Pista Reservada
+            </h2>
+            <p className="text-xs text-zinc-400">
+              Te apuntas tú en tu posición y dejas los otros 3 huecos abiertos para socios
+            </p>
           </div>
           <button
             onClick={onClose}
@@ -88,7 +138,9 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
         <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-5 text-sm">
           {/* Court Selection */}
           <div>
-            <label className="block text-xs font-semibold text-zinc-300 mb-2">Selecciona Pista Espadel</label>
+            <label className="block text-xs font-semibold text-zinc-300 mb-2">
+              Selecciona Pista Oficial Espadel (Césped Azul WPT)
+            </label>
             <div className="grid grid-cols-2 gap-2">
               {COURTS.map(court => (
                 <button
@@ -109,7 +161,45 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
             </div>
           </div>
 
-          {/* Date & Time */}
+          {/* Duration Toggle (90 min vs 60 min) */}
+          <div>
+            <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
+              Duración del Partido
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setDurationMinutes(90);
+                  setTime(TIME_SLOTS_90MIN[0].time);
+                }}
+                className={`py-2 px-3 rounded-xl text-xs font-black transition flex items-center justify-center gap-1.5 border ${
+                  durationMinutes === 90
+                    ? 'bg-yellow-400 text-black border-yellow-400 shadow-md'
+                    : 'bg-zinc-900 border-zinc-800 text-zinc-300'
+                }`}
+              >
+                <span>90 min (1h 30m)</span>
+                <span className="text-[9px] font-mono bg-black/20 text-black px-1 rounded uppercase">Habitual</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setDurationMinutes(60);
+                  setTime(TIME_SLOTS_60MIN[0].time);
+                }}
+                className={`py-2 px-3 rounded-xl text-xs font-black transition border ${
+                  durationMinutes === 60
+                    ? 'bg-yellow-400 text-black border-yellow-400 shadow-md'
+                    : 'bg-zinc-900 border-zinc-800 text-zinc-300'
+                }`}
+              >
+                <span>60 min (1h)</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Date & Time (07:00 a 23:00) */}
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-zinc-300 mb-1.5">Día</label>
@@ -118,26 +208,24 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
                 onChange={e => setDate(e.target.value)}
                 className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-yellow-400"
               >
-                <option value="Hoy, 15 Oct">Hoy, 15 Oct</option>
-                <option value="Mañana, 16 Oct">Mañana, 16 Oct</option>
-                <option value="Sábado, 17 Oct">Sábado, 17 Oct</option>
-                <option value="Domingo, 18 Oct">Domingo, 18 Oct</option>
+                {SCHEDULE_DATES.map(d => (
+                  <option key={d.date} value={d.date}>{d.label} ({d.date.split(', ')[1]})</option>
+                ))}
               </select>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-zinc-300 mb-1.5">Horario (90 min)</label>
+              <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
+                Horario (Club 07:00 - 23:00)
+              </label>
               <select
                 value={time}
                 onChange={e => setTime(e.target.value)}
                 className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-yellow-400 font-mono"
               >
-                <option value="16:30 - 18:00">16:30 - 18:00</option>
-                <option value="18:00 - 19:30">18:00 - 19:30</option>
-                <option value="19:00 - 20:30">19:00 - 20:30</option>
-                <option value="19:30 - 21:00">19:30 - 21:00</option>
-                <option value="20:30 - 22:00">20:30 - 22:00</option>
-                <option value="21:00 - 22:30">21:00 - 22:30</option>
+                {activeTimeSlots.map(slot => (
+                  <option key={slot.id} value={slot.time}>{slot.time}</option>
+                ))}
               </select>
             </div>
           </div>
@@ -145,7 +233,7 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
           {/* Level Filter (1.0 to 7.0) */}
           <div className="bg-zinc-900/60 border border-zinc-800 rounded-2xl p-4">
             <div className="flex items-center justify-between mb-2">
-              <label className="text-xs font-semibold text-zinc-200">Rango de Nivel Permitido</label>
+              <label className="text-xs font-semibold text-zinc-200">Nivel Permitido (1.0 a 7.0)</label>
               <div className="flex items-center gap-1.5">
                 <LevelBadge level={minLevel} size="sm" showCategory={false} />
                 <span className="text-xs text-zinc-500">a</span>
@@ -189,14 +277,14 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
               </div>
             </div>
             <p className="text-[11px] text-zinc-400 mt-2">
-              Tu nivel actual en Espadel es <strong>{currentUser.level.toFixed(1)}</strong>.
+              Tu nivel certificado es <strong>{currentUser.level.toFixed(1)}</strong>. Los socios fuera de este rango no podrán unirse.
             </p>
           </div>
 
-          {/* Position & Notes */}
+          {/* Position Selection (Revés = Izquierda, Drive = Derecha) */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-zinc-300 mb-1.5">Tu Posición Preferida</label>
+              <label className="block text-xs font-semibold text-zinc-300 mb-1.5">Tu Posición en Pista</label>
               <div className="flex rounded-xl bg-zinc-900 p-1 border border-zinc-800">
                 <button
                   type="button"
@@ -205,7 +293,7 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
                     preferredSide === 'Revés' ? 'bg-yellow-400 text-black shadow' : 'text-zinc-400'
                   }`}
                 >
-                  Revés
+                  Revés (Izq)
                 </button>
                 <button
                   type="button"
@@ -214,13 +302,13 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
                     preferredSide === 'Drive' ? 'bg-yellow-400 text-black shadow' : 'text-zinc-400'
                   }`}
                 >
-                  Drive
+                  Drive (Der)
                 </button>
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-zinc-300 mb-1.5">Tipo de Partido</label>
+              <label className="block text-xs font-semibold text-zinc-300 mb-1.5">Modalidad</label>
               <div className="flex rounded-xl bg-zinc-900 p-1 border border-zinc-800">
                 <button
                   type="button"
@@ -251,7 +339,7 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
               value={notes}
               onChange={e => setNotes(e.target.value)}
               className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-yellow-400"
-              placeholder="Ej: Bolas nuevas Espadel, buscamos cerrar pista pronto"
+              placeholder="Ej: Bolas nuevas Espadel Pro, buscamos cerrar pista"
             />
           </div>
 
@@ -260,7 +348,7 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
             type="submit"
             className="w-full py-3.5 rounded-2xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-sm shadow-xl shadow-yellow-400/20 transition flex items-center justify-center gap-2"
           >
-            <Plus className="w-4 h-4" /> Publicar Partido Abierto
+            <Plus className="w-4 h-4 stroke-[3]" /> Publicar Partido y Reservar Pista
           </button>
         </form>
       </div>
