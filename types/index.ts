@@ -1,5 +1,39 @@
 export type SkillCategory = 'iniciacion' | 'medio' | 'avanzado';
 
+export interface PlayerMatchHistoryItem {
+  id: string;
+  date: string;
+  courtName: string;
+  result: 'won' | 'lost';
+  score: string; // e.g. "6-4, 7-5"
+  partner: {
+    id: string;
+    name: string;
+    avatar: string;
+    level: number;
+    sidePreference: 'Revés' | 'Drive';
+  };
+  opponents: [
+    { id: string; name: string; avatar: string; level: number },
+    { id: string; name: string; avatar: string; level: number }
+  ];
+  levelDelta: number; // e.g. +0.02 or -0.01
+  reliabilityAtMatch: number; // e.g. 78%
+  kFactorExplanation: string; // e.g. "Nivel consolidado (+0.02 pts al superar 40 partidos)"
+  userSidePlayed: 'Revés' | 'Drive';
+}
+
+export interface FrequentPartner {
+  partnerId: string;
+  partnerName: string;
+  partnerAvatar: string;
+  partnerLevel: number;
+  matchesTogether: number;
+  winsTogether: number;
+  winRate: number;
+  bestWinScore?: string;
+}
+
 export interface Player {
   id: string;
   name: string;
@@ -9,7 +43,12 @@ export interface Player {
   hand: 'Derecha' | 'Zurdo';
   sidePreference: 'Revés' | 'Drive' | 'Indiferente';
   matchesPlayed: number;
+  matchesWon?: number; // Ranking por partidos ganados
+  matchesLost?: number;
   winRate: number; // Percentage, e.g. 64%
+  reliabilityPercent?: number; // Playtomic style: 20% to 99%
+  levelPoints?: number; // Points in the club
+  currentStreak?: number; // e.g. 3 victorias seguidas
   clubMemberNumber?: string;
   levelCertifiedByClub?: boolean;
   coachNotes?: string;
@@ -20,6 +59,8 @@ export interface Player {
     aereo: number;      // 1-10
     tactica: number;    // 1-10
   };
+  matchHistory?: PlayerMatchHistoryItem[];
+  frequentPartners?: FrequentPartner[];
 }
 
 export interface MatchSlot {

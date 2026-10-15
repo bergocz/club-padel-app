@@ -3,7 +3,7 @@
 import React from 'react';
 import { ClubTheme, Player } from '../types';
 import { LevelBadge } from './LevelBadge';
-import { ShieldCheck, ChevronDown, User, Sparkles, Building2, Flame, KeyRound, LogIn, Eye } from 'lucide-react';
+import { ShieldCheck, ChevronDown, User, Sparkles, Building2, Flame, KeyRound, LogIn, Eye, Trophy } from 'lucide-react';
 
 interface NavbarProps {
   currentClub: ClubTheme;
@@ -14,8 +14,8 @@ interface NavbarProps {
   onOpenB2B: () => void;
   onOpenAdmin: () => void;
   onOpenOnboarding: () => void;
-  activeTab: 'aerial' | 'matches' | 'booking' | 'profile';
-  onTabChange: (tab: 'aerial' | 'matches' | 'booking' | 'profile') => void;
+  activeTab: 'aerial' | 'matches' | 'booking' | 'ranking' | 'profile';
+  onTabChange: (tab: 'aerial' | 'matches' | 'booking' | 'ranking' | 'profile') => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -128,7 +128,25 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span>Reservar Pista</span>
           </button>
 
-          {/* TAB 4: PERFIL (MOBILE) */}
+          {/* TAB 4: RANKING DEL CLUB (Partidos Ganados) */}
+          <button
+            onClick={() => onTabChange('ranking')}
+            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-black transition flex items-center gap-2 ${
+              activeTab === 'ranking'
+                ? 'bg-yellow-400 text-black shadow-lg shadow-yellow-400/20 ring-2 ring-yellow-300'
+                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+            }`}
+          >
+            <Trophy className="w-4 h-4 text-yellow-400 group-hover:text-black" />
+            <span>Ranking Club</span>
+            <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-tight ${
+              activeTab === 'ranking' ? 'bg-black text-yellow-400' : 'bg-yellow-400/20 text-yellow-300'
+            }`}>
+              Victorias
+            </span>
+          </button>
+
+          {/* TAB 5: PERFIL (MOBILE) */}
           <button
             onClick={() => onTabChange('profile')}
             className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-2 sm:hidden ${

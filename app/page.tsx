@@ -16,6 +16,7 @@ import { B2BDemoDrawer } from '../components/B2BDemoDrawer';
 import { AdminClubPanelModal } from '../components/AdminClubPanelModal';
 import { OnboardingAuthModal } from '../components/OnboardingAuthModal';
 import { AerialClubCourtsView } from '../components/AerialClubCourtsView';
+import { ClubRankingView } from '../components/ClubRankingView';
 import { Plus, Sparkles, Filter, Users, Flame, Calendar, Trophy, ShieldAlert, Award, KeyRound, ShieldCheck, Zap, Eye } from 'lucide-react';
 
 export default function HomePage() {
@@ -23,11 +24,12 @@ export default function HomePage() {
   const [currentUser, setCurrentUser] = useState<Player>(INITIAL_USER);
   const [clubPlayers, setClubPlayers] = useState<Player[]>(MOCK_CLUB_PLAYERS);
   const [matches, setMatches] = useState<OpenMatch[]>(INITIAL_MATCHES);
-  const [activeTab, setActiveTab] = useState<'aerial' | 'matches' | 'booking' | 'profile'>('aerial');
+  const [activeTab, setActiveTab] = useState<'aerial' | 'matches' | 'booking' | 'ranking' | 'profile'>('aerial');
 
   // Modals
   const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [selectedPlayerForProfile, setSelectedPlayerForProfile] = useState<Player | null>(null);
   const [isCreateMatchOpen, setIsCreateMatchOpen] = useState(false);
   const [createMatchCourtNumber, setCreateMatchCourtNumber] = useState<number | null>(null);
   const [createMatchTime, setCreateMatchTime] = useState<string | undefined>(undefined);
@@ -281,8 +283,20 @@ export default function HomePage() {
               </button>
 
               <button
+                onClick={() => setActiveTab('ranking')}
+                className={`px-6 py-3 rounded-2xl font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 ${
+                  activeTab === 'ranking'
+                    ? 'bg-yellow-400 text-black shadow-lg shadow-yellow-400/20'
+                    : 'bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-yellow-300'
+                }`}
+              >
+                <Trophy className="w-4 h-4 text-yellow-400" />
+                <span>Ranking Club (Victorias)</span>
+              </button>
+
+              <button
                 onClick={() => setIsCreateMatchOpen(true)}
-                className="px-6 py-3 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-white font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2"
+                className="px-6 py-2.5 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-white font-bold text-xs transition flex items-center justify-center gap-2"
               >
                 <Plus className="w-4 h-4 stroke-[3]" />
                 <span>Crear Partido Abierto</span>
@@ -290,10 +304,10 @@ export default function HomePage() {
 
               <button
                 onClick={() => setIsAdminOpen(true)}
-                className="px-6 py-2.5 rounded-2xl bg-zinc-900/80 hover:bg-yellow-400/10 border border-yellow-400/30 text-yellow-300 font-bold text-xs transition flex items-center justify-center gap-2"
+                className="px-6 py-2 rounded-2xl bg-zinc-900/80 hover:bg-yellow-400/10 border border-yellow-400/30 text-yellow-300 font-bold text-xs transition flex items-center justify-center gap-2"
               >
                 <KeyRound className="w-3.5 h-3.5" />
-                <span>Panel Director (Modificar Niveles)</span>
+                <span>Panel Director</span>
               </button>
             </div>
           </div>
@@ -428,7 +442,20 @@ export default function HomePage() {
           />
         )}
 
-        {/* TAB 4: MI PERFIL (MOBILE VIEW) */}
+        {/* TAB 4: RANKING DEL CLUB (PARTIDOS GANADOS & SISTEMA PLAYTOMIC) */}
+        {activeTab === 'ranking' && (
+          <ClubRankingView
+            players={clubPlayers}
+            currentUser={currentUser}
+            onSelectPlayer={(p) => {
+              setSelectedPlayerForProfile(p);
+              setIsProfileOpen(true);
+            }}
+            onOpenQuiz={() => setIsQuizOpen(true)}
+          />
+        )}
+
+        {/* TAB 5: MI PERFIL (MOBILE VIEW) */}
         {activeTab === 'profile' && (
           <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 text-center max-w-md mx-auto shadow-xl">
             <img
@@ -477,8 +504,12 @@ export default function HomePage() {
               Visión Aérea 6 Pistas
             </button>
             <span>•</span>
+            <button onClick={() => setActiveTab('ranking')} className="text-yellow-400 hover:underline font-bold">
+              Ranking Victorias
+            </button>
+            <span>•</span>
             <button onClick={() => setIsAdminOpen(true)} className="text-zinc-400 hover:underline font-semibold">
-              Panel Director (Modificar Niveles)
+              Panel Director
             </button>
             <span>•</span>
             <button onClick={() => setIsB2BOpen(true)} className="text-zinc-400 hover:underline font-semibold">
@@ -513,7 +544,11 @@ export default function HomePage() {
 
       <ProfileModal
         isOpen={isProfileOpen}
-        onClose={() => setIsProfileOpen(false)}
+        onClose={() => {
+          setIsProfileOpen(false);
+          setSelectedPlayerForProfile(null);
+        }}
+        player={selectedPlayerForProfile || currentUser}
         currentUser={currentUser}
         onSaveProfile={handleSaveProfile}
         onOpenQuiz={() => setIsQuizOpen(true)}
