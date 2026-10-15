@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ClubTheme, OpenMatch, Player, SkillCategory, Court } from '../types';
 import { CLUBS } from '../data/clubs';
-import { INITIAL_USER } from '../data/initialUser';
+import { INITIAL_USER, MOCK_CLUB_PLAYERS } from '../data/initialUser';
 import { INITIAL_MATCHES } from '../data/mockMatches';
 import { Navbar } from '../components/Navbar';
 import { LevelBadge } from '../components/LevelBadge';
@@ -13,11 +13,14 @@ import { CreateMatchModal } from '../components/CreateMatchModal';
 import { CourtBookingView } from '../components/CourtBookingView';
 import { ProfileModal } from '../components/ProfileModal';
 import { B2BDemoDrawer } from '../components/B2BDemoDrawer';
-import { Plus, Sparkles, Filter, Users, Flame, Calendar, Trophy, ShieldAlert, Award } from 'lucide-react';
+import { AdminClubPanelModal } from '../components/AdminClubPanelModal';
+import { OnboardingAuthModal } from '../components/OnboardingAuthModal';
+import { Plus, Sparkles, Filter, Users, Flame, Calendar, Trophy, ShieldAlert, Award, KeyRound, ShieldCheck, Zap } from 'lucide-react';
 
 export default function HomePage() {
-  const [currentClub, setCurrentClub] = useState<ClubTheme>(CLUBS[0]);
+  const [currentClub, setCurrentClub] = useState<ClubTheme>(CLUBS[0]); // Spadel Club
   const [currentUser, setCurrentUser] = useState<Player>(INITIAL_USER);
+  const [clubPlayers, setClubPlayers] = useState<Player[]>(MOCK_CLUB_PLAYERS);
   const [matches, setMatches] = useState<OpenMatch[]>(INITIAL_MATCHES);
   const [activeTab, setActiveTab] = useState<'matches' | 'booking' | 'profile'>('matches');
 
@@ -26,6 +29,16 @@ export default function HomePage() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isCreateMatchOpen, setIsCreateMatchOpen] = useState(false);
   const [isB2BOpen, setIsB2BOpen] = useState(false);
+  const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
+
+  // Check if onboarding was already done in this session
+  useEffect(() => {
+    const hasSeenOnboarding = sessionStorage.getItem('spadel_onboarding_done');
+    if (!hasSeenOnboarding) {
+      setIsOnboardingOpen(true);
+    }
+  }, []);
 
   // Filter for Open Matches
   const [filterCategory, setFilterCategory] = useState<'all' | 'my_level' | 'iniciacion' | 'medio' | 'avanzado'>('all');
@@ -77,17 +90,79 @@ export default function HomePage() {
   };
 
   const handleSaveLevel = (data: Partial<Player>) => {
-    setCurrentUser(prev => ({
-      ...prev,
-      ...data
-    }));
+    setCurrentUser(prev => {
+      const updated = { ...prev, ...data };
+      setClubPlayers(all => all.map(p => p.id === updated.id ? updated : p));
+      return updated;
+    });
   };
 
   const handleSaveProfile = (data: Partial<Player>) => {
-    setCurrentUser(prev => ({
-      ...prev,
-      ...data
+    setCurrentUser(prev => {
+      const updated = { ...prev, ...data };
+      setClubPlayers(all => all.map(p => p.id === updated.id ? updated : p));
+      return updated;
+    });
+  };
+
+  // Club Director Override Action
+  const handleAdminUpdatePlayerLevel = (
+    playerId: string,
+    newLevel: number,
+    newCategory: SkillCategory,
+    isCertified: boolean,
+    notes: string
+  ) => {
+    setClubPlayers(prev => prev.map(p => {
+      if (p.id === playerId) {
+        return {
+          ...p,
+          level: newLevel,
+          category: newCategory,
+          levelCertifiedByClub: isCertified,
+          coachNotes: notes,
+        };
+      }
+      return p;
     }));
+
+    // If updating current user, update live
+    if (currentUser.id === playerId) {
+      setCurrentUser(prev => ({
+        ...prev,
+        level: newLevel,
+        category: newCategory,
+        levelCertifiedByClub: isCertified,
+        coachNotes: notes,
+      }));
+    }
+
+    // Also update in existing match slots
+    setMatches(prev => prev.map(m => ({
+      ...m,
+      slots: m.slots.map(slot => {
+        if (slot.player?.id === playerId) {
+          return {
+            ...slot,
+            player: {
+              ...slot.player,
+              level: newLevel,
+              category: newCategory,
+              levelCertifiedByClub: isCertified
+            }
+          };
+        }
+        return slot;
+      })
+    })));
+  };
+
+  // Onboarding Complete Handler
+  const handleCompleteOnboarding = (newUser: Player) => {
+    setCurrentUser(newUser);
+    setClubPlayers(prev => [newUser, ...prev.filter(p => p.id !== newUser.id && p.id !== 'usr_me')]);
+    sessionStorage.setItem('spadel_onboarding_done', 'true');
+    setIsOnboardingOpen(false);
   };
 
   // Filtered matches logic
@@ -108,7 +183,7 @@ export default function HomePage() {
   });
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100">
+    <div className="min-h-screen flex flex-col bg-black text-zinc-100">
       {/* Navigation */}
       <Navbar
         currentClub={currentClub}
@@ -117,60 +192,68 @@ export default function HomePage() {
         onOpenQuiz={() => setIsQuizOpen(true)}
         onOpenProfile={() => setIsProfileOpen(true)}
         onOpenB2B={() => setIsB2BOpen(true)}
+        onOpenAdmin={() => setIsAdminOpen(true)}
+        onOpenOnboarding={() => setIsOnboardingOpen(true)}
         activeTab={activeTab}
         onTabChange={setActiveTab}
       />
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
-        {/* Club Hero Banner */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900/90 to-slate-950 border border-slate-800 p-6 sm:p-8 shadow-2xl">
-          {/* Subtle Ambient Glow */}
+        {/* Spadel Club Hero Banner */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-zinc-950 via-zinc-900 to-black border border-yellow-500/25 p-6 sm:p-8 shadow-2xl shadow-yellow-500/5">
+          {/* Yellow Ambient Glow */}
           <div
-            className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-15 pointer-events-none"
-            style={{ backgroundColor: currentClub.primaryColor }}
+            className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-10 pointer-events-none bg-yellow-400"
           />
 
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div className="max-w-2xl">
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-2xl">{currentClub.logo}</span>
-                <span className="text-xs font-mono uppercase tracking-wider text-emerald-400 font-bold">
+                <span className="w-6 h-6 rounded-lg bg-yellow-400 text-black flex items-center justify-center font-black text-sm">
+                  ⚡
+                </span>
+                <span className="text-xs font-mono uppercase tracking-wider text-yellow-400 font-bold">
                   {currentClub.name} • {currentClub.city}
                 </span>
-                <span className="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full border border-slate-700">
-                  {currentClub.courtCount} Pistas
+                <span className="text-[10px] bg-zinc-900 text-zinc-400 px-2 py-0.5 rounded-full border border-zinc-800">
+                  {currentClub.courtCount} Pistas Oficiales
                 </span>
               </div>
 
               <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-white leading-tight mb-2">
-                Encuentra partido a tu nivel o reserva pista al instante
+                Partidos abiertos y reservas en <span className="text-yellow-400">Spadel Club</span>
               </h1>
-              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed mb-4">
-                Plataforma oficial del club para sus socios. Partidos abiertos equilibrados por nivel (1.0 — 7.0), sin comisiones de intermediarios y con plazas en tiempo real.
+              <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed mb-4">
+                La app oficial de tu club. Únete a partidos con socios de tu mismo nivel (1.0 — 7.0), reserva pista sin comisiones de terceros y con niveles verificados por la dirección deportiva.
               </p>
 
               {/* User Skill Bar Banner */}
-              <div className="inline-flex flex-wrap items-center gap-3 p-2.5 rounded-2xl bg-slate-950/70 border border-slate-800">
+              <div className="inline-flex flex-wrap items-center gap-3 p-2.5 rounded-2xl bg-zinc-900/90 border border-zinc-800">
                 <div className="flex items-center gap-2">
                   <img
                     src={currentUser.avatar}
                     alt={currentUser.name}
-                    className="w-7 h-7 rounded-full object-cover border border-emerald-500"
+                    className="w-7 h-7 rounded-full object-cover border border-yellow-400"
                   />
-                  <span className="text-xs text-slate-300 font-bold">{currentUser.name}</span>
+                  <span className="text-xs text-zinc-200 font-bold">{currentUser.name}</span>
                 </div>
-                <div className="h-4 w-px bg-slate-800 hidden sm:block" />
+                <div className="h-4 w-px bg-zinc-800 hidden sm:block" />
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-slate-400 font-mono">Tu Nivel:</span>
-                  <LevelBadge level={currentUser.level} category={currentUser.category} size="sm" />
+                  <span className="text-xs text-zinc-400 font-mono">Tu Nivel:</span>
+                  <LevelBadge
+                    level={currentUser.level}
+                    category={currentUser.category}
+                    size="sm"
+                    isCertified={currentUser.levelCertifiedByClub}
+                  />
                 </div>
                 <button
                   onClick={() => setIsQuizOpen(true)}
-                  className="text-xs text-emerald-400 hover:text-emerald-300 font-bold underline underline-offset-2 flex items-center gap-1 ml-auto"
+                  className="text-xs text-yellow-400 hover:text-yellow-300 font-bold underline underline-offset-2 flex items-center gap-1 ml-auto"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
-                  Calibrar Nivel con Test
+                  Calibrar con Test
                 </button>
               </div>
             </div>
@@ -179,7 +262,7 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row lg:flex-col gap-2.5 shrink-0">
               <button
                 onClick={() => setIsCreateMatchOpen(true)}
-                className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs sm:text-sm shadow-xl shadow-emerald-500/20 transition flex items-center justify-center gap-2"
+                className="px-6 py-3.5 rounded-2xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs sm:text-sm shadow-xl shadow-yellow-400/20 transition flex items-center justify-center gap-2"
               >
                 <Plus className="w-4 h-4 stroke-[3]" />
                 <span>Crear Partido Abierto</span>
@@ -187,10 +270,18 @@ export default function HomePage() {
 
               <button
                 onClick={() => setActiveTab('booking')}
-                className="px-6 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2"
+                className="px-6 py-3 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-white font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2"
               >
-                <Calendar className="w-4 h-4 text-slate-400" />
+                <Calendar className="w-4 h-4 text-zinc-400" />
                 <span>Ver Pistas del Club</span>
+              </button>
+
+              <button
+                onClick={() => setIsAdminOpen(true)}
+                className="px-6 py-2.5 rounded-2xl bg-zinc-900/80 hover:bg-yellow-400/10 border border-yellow-400/30 text-yellow-300 font-bold text-xs transition flex items-center justify-center gap-2"
+              >
+                <KeyRound className="w-3.5 h-3.5" />
+                <span>Panel Modificar Niveles (Club)</span>
               </button>
             </div>
           </div>
@@ -200,18 +291,18 @@ export default function HomePage() {
         {activeTab === 'matches' && (
           <div className="space-y-6">
             {/* Filter Tabs Bar */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900/60 border border-slate-800 rounded-3xl p-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-zinc-950 border border-zinc-800 rounded-3xl p-4 shadow-xl">
               <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
-                <span className="text-xs text-slate-400 font-mono flex items-center gap-1 mr-2 shrink-0">
-                  <Filter className="w-3.5 h-3.5 text-slate-500" /> Filtrar:
+                <span className="text-xs text-zinc-400 font-mono flex items-center gap-1 mr-2 shrink-0">
+                  <Filter className="w-3.5 h-3.5 text-zinc-500" /> Filtrar:
                 </span>
 
                 <button
                   onClick={() => setFilterCategory('all')}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold transition shrink-0 ${
                     filterCategory === 'all'
-                      ? 'bg-slate-800 text-white border border-slate-700'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-yellow-400 text-black'
+                      : 'text-zinc-400 hover:text-white'
                   }`}
                 >
                   Todos ({matches.length})
@@ -221,8 +312,8 @@ export default function HomePage() {
                   onClick={() => setFilterCategory('my_level')}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold transition shrink-0 flex items-center gap-1 ${
                     filterCategory === 'my_level'
-                      ? 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-400'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-yellow-400 text-black'
+                      : 'text-zinc-400 hover:text-white'
                   }`}
                 >
                   <Sparkles className="w-3 h-3" />
@@ -233,8 +324,8 @@ export default function HomePage() {
                   onClick={() => setFilterCategory('iniciacion')}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold transition shrink-0 ${
                     filterCategory === 'iniciacion'
-                      ? 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-400'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-yellow-400 text-black'
+                      : 'text-zinc-400 hover:text-white'
                   }`}
                 >
                   Iniciación (1.0 — 3.0)
@@ -244,8 +335,8 @@ export default function HomePage() {
                   onClick={() => setFilterCategory('medio')}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold transition shrink-0 ${
                     filterCategory === 'medio'
-                      ? 'bg-blue-500/15 border border-blue-500/30 text-blue-400'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-yellow-400 text-black'
+                      : 'text-zinc-400 hover:text-white'
                   }`}
                 >
                   Medio (3.0 — 5.0)
@@ -255,15 +346,15 @@ export default function HomePage() {
                   onClick={() => setFilterCategory('avanzado')}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold transition shrink-0 ${
                     filterCategory === 'avanzado'
-                      ? 'bg-amber-500/15 border border-amber-500/30 text-amber-400'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-yellow-400 text-black'
+                      : 'text-zinc-400 hover:text-white'
                   }`}
                 >
                   Avanzado (5.0 — 7.0)
                 </button>
               </div>
 
-              <div className="text-xs font-mono text-slate-400 text-right">
+              <div className="text-xs font-mono text-zinc-400 text-right">
                 {filteredMatches.length} partidos disponibles
               </div>
             </div>
@@ -282,15 +373,15 @@ export default function HomePage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-16 bg-slate-900/40 border border-slate-800 rounded-3xl p-8">
-                <Users className="w-12 h-12 text-slate-600 mx-auto mb-3" />
+              <div className="text-center py-16 bg-zinc-950 border border-zinc-800 rounded-3xl p-8">
+                <Users className="w-12 h-12 text-zinc-600 mx-auto mb-3" />
                 <h3 className="text-base font-bold text-white mb-1">No hay partidos con este filtro</h3>
-                <p className="text-xs text-slate-400 max-w-sm mx-auto mb-4">
-                  Sé el primero en abrir pista en este nivel y deja que el resto de socios se sumen.
+                <p className="text-xs text-zinc-400 max-w-sm mx-auto mb-4">
+                  Sé el primero en abrir pista en este nivel y deja que el resto de socios de Spadel se sumen.
                 </p>
                 <button
                   onClick={() => setIsCreateMatchOpen(true)}
-                  className="px-5 py-2.5 rounded-xl bg-emerald-500 text-slate-950 font-bold text-xs"
+                  className="px-5 py-2.5 rounded-xl bg-yellow-400 text-black font-black text-xs"
                 >
                   Crear Partido Abierto Ahora
                 </button>
@@ -311,25 +402,30 @@ export default function HomePage() {
 
         {/* TAB 3: MI PERFIL (MOBILE VIEW) */}
         {activeTab === 'profile' && (
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 text-center max-w-md mx-auto">
+          <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 text-center max-w-md mx-auto shadow-xl">
             <img
               src={currentUser.avatar}
               alt={currentUser.name}
-              className="w-20 h-20 rounded-full object-cover mx-auto mb-3 border-2 border-emerald-500"
+              className="w-20 h-20 rounded-full object-cover mx-auto mb-3 border-2 border-yellow-400"
             />
             <h2 className="text-lg font-bold text-white">{currentUser.name}</h2>
             <div className="flex justify-center mt-2 mb-4">
-              <LevelBadge level={currentUser.level} category={currentUser.category} size="md" />
+              <LevelBadge
+                level={currentUser.level}
+                category={currentUser.category}
+                size="md"
+                isCertified={currentUser.levelCertifiedByClub}
+              />
             </div>
             <button
               onClick={() => setIsProfileOpen(true)}
-              className="w-full py-2.5 rounded-xl bg-slate-800 text-slate-200 text-xs font-bold mb-2"
+              className="w-full py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-200 text-xs font-bold mb-2 hover:bg-zinc-800"
             >
               Editar Foto y Datos de Perfil
             </button>
             <button
               onClick={() => setIsQuizOpen(true)}
-              className="w-full py-2.5 rounded-xl bg-emerald-500 text-slate-950 text-xs font-bold"
+              className="w-full py-2.5 rounded-xl bg-yellow-400 text-black text-xs font-black hover:bg-yellow-300"
             >
               Hacer Test de Nivelación (8 Preguntas)
             </button>
@@ -338,25 +434,44 @@ export default function HomePage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-900 bg-slate-950/80 py-8 px-4 text-center text-xs text-slate-500">
+      <footer className="border-t border-zinc-900 bg-black/90 py-8 px-4 text-center text-xs text-zinc-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span className="text-base">{currentClub.logo}</span>
-            <span className="font-bold text-slate-300">{currentClub.name}</span>
-            <span>• Solución SaaS White-Label para Clubes</span>
+            <span className="w-5 h-5 rounded bg-yellow-400 text-black flex items-center justify-center font-black text-xs">
+              ⚡
+            </span>
+            <span className="font-bold text-zinc-300">{currentClub.name}</span>
+            <span>• Solución Oficial Marca Blanca para el Club</span>
           </div>
 
           <div className="flex items-center gap-4 text-[11px]">
-            <span>Escala Oficial de Nivel (1.0 — 7.0)</span>
+            <button onClick={() => setIsAdminOpen(true)} className="text-yellow-400 hover:underline font-bold">
+              Panel Director (Modificar Niveles)
+            </button>
             <span>•</span>
-            <button onClick={() => setIsB2BOpen(true)} className="text-indigo-400 hover:underline font-semibold">
-              Propuesta Comercial B2B
+            <button onClick={() => setIsB2BOpen(true)} className="text-zinc-400 hover:underline font-semibold">
+              Dossier Venta Club
             </button>
           </div>
         </div>
       </footer>
 
       {/* MODALS */}
+      <OnboardingAuthModal
+        isOpen={isOnboardingOpen}
+        onClose={() => setIsOnboardingOpen(false)}
+        onComplete={handleCompleteOnboarding}
+        canClose={true}
+      />
+
+      <AdminClubPanelModal
+        isOpen={isAdminOpen}
+        onClose={() => setIsAdminOpen(false)}
+        players={clubPlayers}
+        currentUser={currentUser}
+        onUpdatePlayerLevel={handleAdminUpdatePlayerLevel}
+      />
+
       <LevelQuizModal
         isOpen={isQuizOpen}
         onClose={() => setIsQuizOpen(false)}

@@ -11,6 +11,8 @@ export interface Player {
   matchesPlayed: number;
   winRate: number; // Percentage, e.g. 64%
   clubMemberNumber?: string;
+  levelCertifiedByClub?: boolean;
+  coachNotes?: string;
   radarStats: {
     tecnica: number;    // 1-10
     paredes: number;    // 1-10

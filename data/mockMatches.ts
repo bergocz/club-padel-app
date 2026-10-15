@@ -3,7 +3,7 @@ import { OpenMatch } from '../types';
 export const INITIAL_MATCHES: OpenMatch[] = [
   {
     id: 'match-1',
-    courtName: 'Pista 1 — Central Panorámica',
+    courtName: 'Pista 1 — Spadel Central Panorámica',
     courtType: 'Central',
     date: 'Hoy, 15 Oct',
     time: '18:00 - 19:30',
@@ -72,7 +72,7 @@ export const INITIAL_MATCHES: OpenMatch[] = [
   },
   {
     id: 'match-2',
-    courtName: 'Pista 2 — Cristal Indoor',
+    courtName: 'Pista 2 — Spadel Indoor Pro',
     courtType: 'Panorámica Cubierta',
     date: 'Hoy, 15 Oct',
     time: '19:30 - 21:00',
@@ -97,6 +97,7 @@ export const INITIAL_MATCHES: OpenMatch[] = [
           sidePreference: 'Indiferente',
           matchesPlayed: 14,
           winRate: 45,
+          levelCertifiedByClub: true,
           radarStats: { tecnica: 4, paredes: 3, volea: 4, aereo: 3, tactica: 4 }
         }
       },
@@ -118,6 +119,7 @@ export const INITIAL_MATCHES: OpenMatch[] = [
           sidePreference: 'Drive',
           matchesPlayed: 22,
           winRate: 50,
+          levelCertifiedByClub: false,
           radarStats: { tecnica: 5, paredes: 4, volea: 4, aereo: 3, tactica: 5 }
         }
       },
@@ -130,7 +132,7 @@ export const INITIAL_MATCHES: OpenMatch[] = [
   },
   {
     id: 'match-3',
-    courtName: 'Pista 1 — Central Panorámica',
+    courtName: 'Pista 1 — Spadel Central Panorámica',
     courtType: 'Central',
     date: 'Mañana, 16 Oct',
     time: '20:00 - 21:30',
@@ -140,7 +142,7 @@ export const INITIAL_MATCHES: OpenMatch[] = [
     maxLevel: 6.5,
     status: 'open',
     isCompetitive: true,
-    notes: 'Nivel Avanzado / Competición federada. Ritmo alto, x3 y bajadas de pared.',
+    notes: 'Nivel Avanzado / Competición federada Spadel. Ritmo alto, x3 y bajadas de pared.',
     slots: [
       {
         position: 1,
@@ -155,6 +157,7 @@ export const INITIAL_MATCHES: OpenMatch[] = [
           sidePreference: 'Revés',
           matchesPlayed: 230,
           winRate: 74,
+          levelCertifiedByClub: true,
           radarStats: { tecnica: 9, paredes: 9, volea: 9, aereo: 9, tactica: 9 }
         }
       },
@@ -177,7 +180,7 @@ export const INITIAL_MATCHES: OpenMatch[] = [
   },
   {
     id: 'match-4',
-    courtName: 'Pista 3 — Cubierta Pro',
+    courtName: 'Pista 3 — Spadel Cristal Cubierta',
     courtType: 'Panorámica Cubierta',
     date: 'Mañana, 16 Oct',
     time: '18:30 - 20:00',

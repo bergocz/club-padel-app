@@ -25,7 +25,7 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
   const [minLevel, setMinLevel] = useState(Math.max(1.0, Math.round((currentUser.level - 0.5) * 10) / 10));
   const [maxLevel, setMaxLevel] = useState(Math.min(7.0, Math.round((currentUser.level + 0.5) * 10) / 10));
   const [isCompetitive, setIsCompetitive] = useState(true);
-  const [notes, setNotes] = useState('Partido abierto, busco cerrar pista pronto.');
+  const [notes, setNotes] = useState('Partido abierto Spadel, busco cerrar pista pronto.');
   const [preferredSide, setPreferredSide] = useState<'Revés' | 'Drive'>(currentUser.sidePreference === 'Drive' ? 'Drive' : 'Revés');
 
   if (!isOpen) return null;
@@ -68,17 +68,17 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl animate-in fade-in duration-200">
+      <div className="relative w-full max-w-lg bg-zinc-950 border border-zinc-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="px-6 py-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
+        <div className="px-6 py-5 border-b border-zinc-900 flex items-center justify-between bg-zinc-950/80">
           <div>
-            <h2 className="text-lg font-bold text-white tracking-tight">Crear Partido Abierto</h2>
-            <p className="text-xs text-slate-400">Reserva tu plaza y abre las otras 3 a los socios del club</p>
+            <h2 className="text-lg font-bold text-white tracking-tight">Crear Partido Abierto en Spadel Club</h2>
+            <p className="text-xs text-zinc-400">Reserva tu plaza y abre las otras 3 a los socios del club</p>
           </div>
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition"
+            className="w-9 h-9 rounded-full bg-zinc-900 hover:bg-zinc-800 flex items-center justify-center text-zinc-400 hover:text-white transition"
           >
             <X className="w-5 h-5" />
           </button>
@@ -88,7 +88,7 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
         <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-5 text-sm">
           {/* Court Selection */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-2">Selecciona Pista</label>
+            <label className="block text-xs font-semibold text-zinc-300 mb-2">Selecciona Pista Spadel</label>
             <div className="grid grid-cols-2 gap-2">
               {COURTS.map(court => (
                 <button
@@ -97,13 +97,13 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
                   onClick={() => setSelectedCourt(court)}
                   className={`p-3 rounded-2xl border text-left transition ${
                     selectedCourt.id === court.id
-                      ? 'bg-emerald-500/10 border-emerald-500 text-white shadow-md'
-                      : 'bg-slate-800/40 border-slate-700/60 text-slate-300 hover:bg-slate-800'
+                      ? 'bg-yellow-400/10 border-yellow-400 text-white shadow-md'
+                      : 'bg-zinc-900/40 border-zinc-800 text-zinc-300 hover:bg-zinc-900'
                   }`}
                 >
                   <div className="font-bold text-xs truncate">{court.name}</div>
-                  <div className="text-[10px] text-slate-400 mt-0.5">{court.type}</div>
-                  <div className="text-xs font-mono font-bold text-emerald-400 mt-1">{court.priceHour}€/h</div>
+                  <div className="text-[10px] text-zinc-400 mt-0.5">{court.type}</div>
+                  <div className="text-xs font-mono font-bold text-yellow-400 mt-1">{court.priceHour}€/h</div>
                 </button>
               ))}
             </div>
@@ -112,11 +112,11 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
           {/* Date & Time */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Día</label>
+              <label className="block text-xs font-semibold text-zinc-300 mb-1.5">Día</label>
               <select
                 value={date}
                 onChange={e => setDate(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500"
+                className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-yellow-400"
               >
                 <option value="Hoy, 15 Oct">Hoy, 15 Oct</option>
                 <option value="Mañana, 16 Oct">Mañana, 16 Oct</option>
@@ -126,11 +126,11 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Horario (90 min)</label>
+              <label className="block text-xs font-semibold text-zinc-300 mb-1.5">Horario (90 min)</label>
               <select
                 value={time}
                 onChange={e => setTime(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
+                className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-yellow-400 font-mono"
               >
                 <option value="16:30 - 18:00">16:30 - 18:00</option>
                 <option value="18:00 - 19:30">18:00 - 19:30</option>
@@ -143,19 +143,19 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
           </div>
 
           {/* Level Filter (1.0 to 7.0) */}
-          <div className="bg-slate-950/60 border border-slate-800/80 rounded-2xl p-4">
+          <div className="bg-zinc-900/60 border border-zinc-800 rounded-2xl p-4">
             <div className="flex items-center justify-between mb-2">
-              <label className="text-xs font-semibold text-slate-200">Rango de Nivel Permitido</label>
+              <label className="text-xs font-semibold text-zinc-200">Rango de Nivel Permitido</label>
               <div className="flex items-center gap-1.5">
                 <LevelBadge level={minLevel} size="sm" showCategory={false} />
-                <span className="text-xs text-slate-500">a</span>
+                <span className="text-xs text-zinc-500">a</span>
                 <LevelBadge level={maxLevel} size="sm" showCategory={false} />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <span className="text-[10px] text-slate-400 block mb-1">Mínimo: {minLevel.toFixed(1)}</span>
+                <span className="text-[10px] text-zinc-400 block mb-1">Mínimo: {minLevel.toFixed(1)}</span>
                 <input
                   type="range"
                   min="1.0"
@@ -167,12 +167,12 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
                     setMinLevel(val);
                     if (val > maxLevel) setMaxLevel(val);
                   }}
-                  className="w-full accent-emerald-500"
+                  className="w-full accent-yellow-400"
                 />
               </div>
 
               <div>
-                <span className="text-[10px] text-slate-400 block mb-1">Máximo: {maxLevel.toFixed(1)}</span>
+                <span className="text-[10px] text-zinc-400 block mb-1">Máximo: {maxLevel.toFixed(1)}</span>
                 <input
                   type="range"
                   min="1.0"
@@ -184,25 +184,25 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
                     setMaxLevel(val);
                     if (val < minLevel) setMinLevel(val);
                   }}
-                  className="w-full accent-emerald-500"
+                  className="w-full accent-yellow-400"
                 />
               </div>
             </div>
-            <p className="text-[11px] text-slate-400 mt-2">
-              Tu nivel actual es <strong>{currentUser.level.toFixed(1)}</strong>. Recomendamos un margen de ±0.5 para garantizar igualdad.
+            <p className="text-[11px] text-zinc-400 mt-2">
+              Tu nivel actual en Spadel es <strong>{currentUser.level.toFixed(1)}</strong>.
             </p>
           </div>
 
           {/* Position & Notes */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Tu Posición Preferida</label>
-              <div className="flex rounded-xl bg-slate-800 p-1 border border-slate-700">
+              <label className="block text-xs font-semibold text-zinc-300 mb-1.5">Tu Posición Preferida</label>
+              <div className="flex rounded-xl bg-zinc-900 p-1 border border-zinc-800">
                 <button
                   type="button"
                   onClick={() => setPreferredSide('Revés')}
                   className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition ${
-                    preferredSide === 'Revés' ? 'bg-emerald-500 text-slate-950 shadow' : 'text-slate-400'
+                    preferredSide === 'Revés' ? 'bg-yellow-400 text-black shadow' : 'text-zinc-400'
                   }`}
                 >
                   Revés
@@ -211,7 +211,7 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
                   type="button"
                   onClick={() => setPreferredSide('Drive')}
                   className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition ${
-                    preferredSide === 'Drive' ? 'bg-emerald-500 text-slate-950 shadow' : 'text-slate-400'
+                    preferredSide === 'Drive' ? 'bg-yellow-400 text-black shadow' : 'text-zinc-400'
                   }`}
                 >
                   Drive
@@ -220,13 +220,13 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Tipo de Partido</label>
-              <div className="flex rounded-xl bg-slate-800 p-1 border border-slate-700">
+              <label className="block text-xs font-semibold text-zinc-300 mb-1.5">Tipo de Partido</label>
+              <div className="flex rounded-xl bg-zinc-900 p-1 border border-zinc-800">
                 <button
                   type="button"
                   onClick={() => setIsCompetitive(true)}
                   className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition ${
-                    isCompetitive ? 'bg-emerald-500 text-slate-950 shadow' : 'text-slate-400'
+                    isCompetitive ? 'bg-yellow-400 text-black shadow' : 'text-zinc-400'
                   }`}
                 >
                   Competitivo
@@ -235,7 +235,7 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
                   type="button"
                   onClick={() => setIsCompetitive(false)}
                   className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition ${
-                    !isCompetitive ? 'bg-blue-500 text-white shadow' : 'text-slate-400'
+                    !isCompetitive ? 'bg-zinc-700 text-white shadow' : 'text-zinc-400'
                   }`}
                 >
                   Amistoso
@@ -245,20 +245,20 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Notas para los compañeros</label>
+            <label className="block text-xs font-semibold text-zinc-300 mb-1.5">Notas para los compañeros</label>
             <input
               type="text"
               value={notes}
               onChange={e => setNotes(e.target.value)}
-              className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500"
-              placeholder="Ej: Bolas nuevas, buscamos cerrar pista pronto"
+              className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-yellow-400"
+              placeholder="Ej: Bolas nuevas Spadel, buscamos cerrar pista pronto"
             />
           </div>
 
           {/* Submit */}
           <button
             type="submit"
-            className="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold text-sm shadow-xl shadow-emerald-500/20 transition flex items-center justify-center gap-2"
+            className="w-full py-3.5 rounded-2xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-sm shadow-xl shadow-yellow-400/20 transition flex items-center justify-center gap-2"
           >
             <Plus className="w-4 h-4" /> Publicar Partido Abierto
           </button>

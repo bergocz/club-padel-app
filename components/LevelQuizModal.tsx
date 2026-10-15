@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { QUIZ_QUESTIONS, calculateSkillLevel } from '../data/quiz';
 import { Player } from '../types';
 import { LevelBadge } from './LevelBadge';
-import { CheckCircle2, ChevronRight, ChevronLeft, Award, RotateCcw, Sparkles, X, Target } from 'lucide-react';
+import { CheckCircle2, ChevronRight, ChevronLeft, Award, RotateCcw, Sparkles, X, Target, Zap } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 interface LevelQuizModalProps {
@@ -39,8 +39,9 @@ export const LevelQuizModal: React.FC<LevelQuizModalProps> = ({
       // Finished all questions!
       setShowResult(true);
       confetti({
-        particleCount: 120,
-        spread: 70,
+        particleCount: 140,
+        spread: 75,
+        colors: ['#facc15', '#eab308', '#ffffff', '#000000'],
         origin: { y: 0.6 }
       });
     }
@@ -70,22 +71,22 @@ export const LevelQuizModal: React.FC<LevelQuizModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl animate-in fade-in duration-200">
+      <div className="relative w-full max-w-2xl bg-zinc-950 border border-yellow-500/30 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="px-6 py-5 border-b border-slate-800/80 flex items-center justify-between bg-slate-900/50">
+        <div className="px-6 py-5 border-b border-zinc-900 flex items-center justify-between bg-zinc-950/80">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-              <Target className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-yellow-400 text-black flex items-center justify-center font-black shadow-md shadow-yellow-400/20">
+              <Zap className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-white tracking-tight">Test Diagnóstico de Nivel</h2>
-              <p className="text-xs text-slate-400">Escala Oficial de Pádel (1.0 — 7.0)</p>
+              <h2 className="text-lg font-bold text-white tracking-tight">Test Diagnóstico de Nivel Spadel</h2>
+              <p className="text-xs text-zinc-400">Escala Oficial de Pádel (1.0 — 7.0)</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition"
+            className="w-9 h-9 rounded-full bg-zinc-900 hover:bg-zinc-800 flex items-center justify-center text-zinc-400 hover:text-white transition"
           >
             <X className="w-5 h-5" />
           </button>
@@ -97,13 +98,13 @@ export const LevelQuizModal: React.FC<LevelQuizModalProps> = ({
             <div>
               {/* Progress Bar */}
               <div className="mb-6">
-                <div className="flex items-center justify-between text-xs text-slate-400 font-mono mb-2">
+                <div className="flex items-center justify-between text-xs text-zinc-400 font-mono mb-2">
                   <span>PREGUNTA {currentStep + 1} DE {QUIZ_QUESTIONS.length}</span>
-                  <span className="text-emerald-400 font-bold">{progressPercent}% COMPLETADO</span>
+                  <span className="text-yellow-400 font-bold">{progressPercent}% COMPLETADO</span>
                 </div>
-                <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-zinc-900 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-300 rounded-full"
+                    className="h-full bg-gradient-to-r from-yellow-400 to-amber-400 transition-all duration-300 rounded-full"
                     style={{ width: `${progressPercent}%` }}
                   />
                 </div>
@@ -114,7 +115,7 @@ export const LevelQuizModal: React.FC<LevelQuizModalProps> = ({
                 <h3 className="text-xl font-bold text-white mb-2 leading-snug">
                   {currentQ.title}
                 </h3>
-                <p className="text-sm text-slate-400">
+                <p className="text-sm text-zinc-400">
                   {currentQ.subtitle}
                 </p>
               </div>
@@ -129,18 +130,18 @@ export const LevelQuizModal: React.FC<LevelQuizModalProps> = ({
                       onClick={() => handleSelectOption(opt.points)}
                       className={`w-full text-left p-4 rounded-2xl border transition-all duration-150 flex items-start gap-4 ${
                         isSelected
-                          ? 'bg-emerald-500/10 border-emerald-500 text-white shadow-lg shadow-emerald-500/5'
-                          : 'bg-slate-800/40 border-slate-700/60 hover:bg-slate-800 hover:border-slate-600 text-slate-200'
+                          ? 'bg-yellow-400/10 border-yellow-400 text-white shadow-lg shadow-yellow-400/5'
+                          : 'bg-zinc-900/40 border-zinc-800 hover:bg-zinc-900 hover:border-yellow-400/50 text-zinc-200'
                       }`}
                     >
                       <div className={`mt-0.5 w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${
-                        isSelected ? 'border-emerald-400 bg-emerald-500 text-slate-950' : 'border-slate-600'
+                        isSelected ? 'border-yellow-400 bg-yellow-400 text-black' : 'border-zinc-700'
                       }`}>
                         {isSelected && <CheckCircle2 className="w-4 h-4" />}
                       </div>
                       <div className="flex-1">
                         <div className="font-semibold text-sm text-white mb-0.5">{opt.label}</div>
-                        <div className="text-xs text-slate-400 leading-relaxed">{opt.description}</div>
+                        <div className="text-xs text-zinc-400 leading-relaxed">{opt.description}</div>
                       </div>
                     </button>
                   );
@@ -150,81 +151,81 @@ export const LevelQuizModal: React.FC<LevelQuizModalProps> = ({
           ) : (
             /* Result Screen */
             <div className="py-2 text-center animate-in zoom-in-95 duration-200">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 mb-4 shadow-xl shadow-emerald-500/10">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-yellow-400/15 border border-yellow-400/30 text-yellow-400 mb-4 shadow-xl shadow-yellow-400/10">
                 <Award className="w-9 h-9" />
               </div>
 
               <h3 className="text-2xl font-black text-white tracking-tight mb-1">
                 ¡Nivel Calculado con Éxito!
               </h3>
-              <p className="text-sm text-slate-400 max-w-md mx-auto mb-6">
+              <p className="text-sm text-zinc-400 max-w-md mx-auto mb-6">
                 Basado en tu técnica, control con paredes, volea y experiencia en torneos.
               </p>
 
               {/* Big Score Box */}
-              <div className="max-w-sm mx-auto bg-slate-800/60 border border-slate-700/80 rounded-3xl p-6 mb-6">
-                <div className="text-xs uppercase font-mono tracking-wider text-slate-400 mb-1">Tu Nivel Asignado</div>
-                <div className="text-6xl font-black tracking-tight text-white font-mono mb-3 bg-gradient-to-r from-emerald-400 via-teal-300 to-sky-400 bg-clip-text text-transparent">
+              <div className="max-w-sm mx-auto bg-zinc-900/70 border border-yellow-400/40 rounded-3xl p-6 mb-6">
+                <div className="text-xs uppercase font-mono tracking-wider text-zinc-400 mb-1">Tu Nivel Asignado</div>
+                <div className="text-6xl font-black tracking-tight font-mono mb-3 text-yellow-400">
                   {calculated.level.toFixed(1)}
                 </div>
                 <div className="flex justify-center">
                   <LevelBadge level={calculated.level} category={calculated.category} size="lg" />
                 </div>
-                <div className="text-xs text-slate-400 mt-3">
-                  Nivel previo: <span className="font-bold text-slate-300">{currentLevel.toFixed(1)}</span>
+                <div className="text-xs text-zinc-400 mt-3">
+                  Nivel previo: <span className="font-bold text-zinc-300">{currentLevel.toFixed(1)}</span>
                 </div>
               </div>
 
               {/* Skills Breakdown */}
-              <div className="max-w-md mx-auto text-left bg-slate-950/40 border border-slate-800/80 rounded-2xl p-4 mb-6">
-                <div className="text-xs font-semibold text-slate-300 mb-3 flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+              <div className="max-w-md mx-auto text-left bg-black border border-zinc-800 rounded-2xl p-4 mb-6">
+                <div className="text-xs font-semibold text-zinc-300 mb-3 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-yellow-400" />
                   Desglose de Habilidades (1 - 10)
                 </div>
                 <div className="space-y-2.5 text-xs">
                   <div>
-                    <div className="flex justify-between text-slate-400 mb-1 font-mono">
+                    <div className="flex justify-between text-zinc-400 mb-1 font-mono">
                       <span>Técnica & Fondo de Pista</span>
                       <span className="text-white font-bold">{calculated.radarStats.tecnica}/10</span>
                     </div>
-                    <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                      <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${calculated.radarStats.tecnica * 10}%` }} />
+                    <div className="w-full h-1.5 bg-zinc-900 rounded-full overflow-hidden">
+                      <div className="h-full bg-yellow-400 rounded-full" style={{ width: `${calculated.radarStats.tecnica * 10}%` }} />
                     </div>
                   </div>
                   <div>
-                    <div className="flex justify-between text-slate-400 mb-1 font-mono">
+                    <div className="flex justify-between text-zinc-400 mb-1 font-mono">
                       <span>Juego de Paredes (Rebote & Giros)</span>
                       <span className="text-white font-bold">{calculated.radarStats.paredes}/10</span>
                     </div>
-                    <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                      <div className="h-full bg-teal-500 rounded-full" style={{ width: `${calculated.radarStats.paredes * 10}%` }} />
+                    <div className="w-full h-1.5 bg-zinc-900 rounded-full overflow-hidden">
+                      <div className="h-full bg-yellow-400 rounded-full" style={{ width: `${calculated.radarStats.paredes * 10}%` }} />
                     </div>
                   </div>
                   <div>
-                    <div className="flex justify-between text-slate-400 mb-1 font-mono">
+                    <div className="flex justify-between text-zinc-400 mb-1 font-mono">
                       <span>Volea & Presión en la Red</span>
                       <span className="text-white font-bold">{calculated.radarStats.volea}/10</span>
                     </div>
-                    <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                      <div className="h-full bg-blue-500 rounded-full" style={{ width: `${calculated.radarStats.volea * 10}%` }} />
+                    <div className="w-full h-1.5 bg-zinc-900 rounded-full overflow-hidden">
+                      <div className="h-full bg-yellow-400 rounded-full" style={{ width: `${calculated.radarStats.volea * 10}%` }} />
                     </div>
                   </div>
                   <div>
-                    <div className="flex justify-between text-slate-400 mb-1 font-mono">
+                    <div className="flex justify-between text-zinc-400 mb-1 font-mono">
                       <span>Aéreo & Remate</span>
                       <span className="text-white font-bold">{calculated.radarStats.aereo}/10</span>
                     </div>
-                    <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                      <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${calculated.radarStats.aereo * 10}%` }} />
+                    <div className="w-full h-1.5 bg-zinc-900 rounded-full overflow-hidden">
+                      <div className="h-full bg-yellow-400 rounded-full" style={{ width: `${calculated.radarStats.aereo * 10}%` }} />
                     </div>
                   </div>
                   <div>
-                    <div className="flex justify-between text-slate-400 mb-1 font-mono">
+                    <div className="flex justify-between text-zinc-400 mb-1 font-mono">
                       <span>Táctica & Pareja</span>
                       <span className="text-white font-bold">{calculated.radarStats.tactica}/10</span>
                     </div>
-                    <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                      <div className="h-full bg-amber-500 rounded-full" style={{ width: `${calculated.radarStats.tactica * 10}%` }} />
+                    <div className="w-full h-1.5 bg-zinc-900 rounded-full overflow-hidden">
+                      <div className="h-full bg-yellow-400 rounded-full" style={{ width: `${calculated.radarStats.tactica * 10}%` }} />
                     </div>
                   </div>
                 </div>
@@ -234,7 +235,7 @@ export const LevelQuizModal: React.FC<LevelQuizModalProps> = ({
         </div>
 
         {/* Footer Navigation */}
-        <div className="px-6 py-4 bg-slate-950/70 border-t border-slate-800/80 flex items-center justify-between">
+        <div className="px-6 py-4 bg-zinc-950 border-t border-zinc-900 flex items-center justify-between">
           {!showResult ? (
             <>
               <button
@@ -242,13 +243,13 @@ export const LevelQuizModal: React.FC<LevelQuizModalProps> = ({
                 disabled={currentStep === 0}
                 className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition ${
                   currentStep === 0
-                    ? 'text-slate-600 cursor-not-allowed'
-                    : 'text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700'
+                    ? 'text-zinc-700 cursor-not-allowed'
+                    : 'text-zinc-300 hover:text-white bg-zinc-900 hover:bg-zinc-800'
                 }`}
               >
                 <ChevronLeft className="w-4 h-4" /> Anterior
               </button>
-              <div className="text-xs text-slate-500">
+              <div className="text-xs text-zinc-500">
                 Selecciona una respuesta para avanzar
               </div>
             </>
@@ -256,15 +257,15 @@ export const LevelQuizModal: React.FC<LevelQuizModalProps> = ({
             <>
               <button
                 onClick={handleReset}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 flex items-center gap-1.5 transition"
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white bg-zinc-900 hover:bg-zinc-800 flex items-center gap-1.5 transition"
               >
                 <RotateCcw className="w-4 h-4" /> Repetir Test
               </button>
               <button
                 onClick={handleApply}
-                className="px-6 py-2.5 rounded-xl text-xs font-bold text-slate-950 bg-gradient-to-r from-emerald-400 to-teal-400 hover:brightness-110 shadow-lg shadow-emerald-500/20 flex items-center gap-2 transition"
+                className="px-6 py-2.5 rounded-xl text-xs font-black text-black bg-yellow-400 hover:bg-yellow-300 shadow-lg shadow-yellow-400/20 flex items-center gap-2 transition"
               >
-                Guardar Nivel en mi Perfil <ChevronRight className="w-4 h-4" />
+                Guardar Nivel en mi Ficha <ChevronRight className="w-4 h-4 stroke-[3]" />
               </button>
             </>
           )}

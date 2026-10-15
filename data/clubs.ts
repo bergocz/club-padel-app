@@ -2,13 +2,25 @@ import { ClubTheme } from '../types';
 
 export const CLUBS: ClubTheme[] = [
   {
+    id: 'spadel-club',
+    name: 'Spadel Club',
+    tagline: 'Centro Oficial de Pádel & Competición',
+    logo: '⚡',
+    primaryColor: '#facc15', // Vibrant Athletic Yellow
+    secondaryColor: '#09090b', // Deep Slate / Pitch Black
+    accentColor: '#eab308', // Amber Yellow
+    courtCount: 10,
+    address: 'Carrer de la Raqueta 24',
+    city: 'Madrid'
+  },
+  {
     id: 'club-esmeralda',
     name: 'Real Club Padel Titanium',
-    tagline: 'Centro de Alto Rendimiento & Padel Social',
+    tagline: 'Centro de Alto Rendimiento',
     logo: '🎾',
-    primaryColor: '#059669', // Emerald 600
-    secondaryColor: '#064e3b', // Emerald 900
-    accentColor: '#10b981', // Emerald 500
+    primaryColor: '#059669',
+    secondaryColor: '#064e3b',
+    accentColor: '#10b981',
     courtCount: 12,
     address: 'Av. del Deporte 42, Las Rozas',
     city: 'Madrid'
@@ -16,25 +28,13 @@ export const CLUBS: ClubTheme[] = [
   {
     id: 'club-ocean-blue',
     name: 'Blue Padel Arena',
-    tagline: 'Pistas Panorámicas WPT & Academia Pro',
-    logo: '⚡',
-    primaryColor: '#2563eb', // Blue 600
-    secondaryColor: '#1e3a8a', // Blue 900
-    accentColor: '#38bdf8', // Sky 400
+    tagline: 'Pistas Panorámicas WPT',
+    logo: '🌊',
+    primaryColor: '#2563eb',
+    secondaryColor: '#1e3a8a',
+    accentColor: '#38bdf8',
     courtCount: 8,
     address: 'Paseo Marítimo 118',
     city: 'Valencia'
-  },
-  {
-    id: 'club-amber-luxe',
-    name: 'Club Padel Royal Amber',
-    tagline: 'Experiencia Premium & Padel Club Boutique',
-    logo: '👑',
-    primaryColor: '#d97706', // Amber 600
-    secondaryColor: '#78350f', // Amber 900
-    accentColor: '#fbbf24', // Amber 400
-    courtCount: 6,
-    address: 'Carrer de Sarrià 77',
-    city: 'Barcelona'
   }
 ];
