@@ -815,7 +815,7 @@ const AerialCourtCanvas: React.FC<AerialCourtCanvasProps> = ({
         ) : (
           /* VERTICAL COURT LAYOUT (PISTA 4 EN VERTICAL):
               A la misma altura, a fondo de pista en la mitad:
-              - Campo Superior: Fila en la mitad del fondo superior (Revés izquierda, Drive derecha)
+              - Campo Superior: Fila en la mitad del fondo superior (Drive izquierda, Revés derecha)
               - Campo Inferior: Fila en la mitad del fondo inferior (Revés izquierda, Drive derecha)
           */
           <>
@@ -840,16 +840,8 @@ const AerialCourtCanvas: React.FC<AerialCourtCanvasProps> = ({
                 - Campo Inferior (Team B): Fila en la mitad del fondo inferior
             */}
             <div className="absolute inset-2 z-20 pointer-events-auto">
-              {/* Fondo Superior (Team A): Ambos a la misma altura Y */}
+              {/* Fondo Superior (Team A): Ambos a la misma altura Y (Drive a la izquierda, Revés a la derecha desde perspectiva de fondo) */}
               <div className="absolute left-2 right-2 top-1 h-[26%] flex flex-row justify-around items-center">
-                <PlayerCircle
-                  position={1}
-                  side="Revés"
-                  slot={slot1}
-                  currentUser={currentUser}
-                  onJoin={() => onJoinSlot(1)}
-                  onLeave={() => onLeaveSlot(1)}
-                />
                 <PlayerCircle
                   position={2}
                   side="Drive"
@@ -857,6 +849,14 @@ const AerialCourtCanvas: React.FC<AerialCourtCanvasProps> = ({
                   currentUser={currentUser}
                   onJoin={() => onJoinSlot(2)}
                   onLeave={() => onLeaveSlot(2)}
+                />
+                <PlayerCircle
+                  position={1}
+                  side="Revés"
+                  slot={slot1}
+                  currentUser={currentUser}
+                  onJoin={() => onJoinSlot(1)}
+                  onLeave={() => onLeaveSlot(1)}
                 />
               </div>
 
