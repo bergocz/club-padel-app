@@ -53,14 +53,14 @@ export const ESPADEL_COURTS: AerialCourt[] = [
   {
     id: 'court-4',
     number: 4,
-    name: 'Pista 4 — Indoor Pro',
+    name: 'Pista 4 — Central Vertical',
     nave: 'Nave B (Sala Anexa)',
     naveId: 'nave-b',
-    orientation: 'horizontal',
+    orientation: 'vertical',
     surface: 'Mondo Supercourt Azul Oficial',
     indoor: true,
     priceHour: 30,
-    features: ['Disposición Horizontal', 'Césped Azul WPT', 'Gradas laterales']
+    features: ['Disposición Vertical', 'Césped Azul WPT', 'Gradas laterales']
   },
   {
     id: 'court-5',

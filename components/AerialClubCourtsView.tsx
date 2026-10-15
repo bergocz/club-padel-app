@@ -680,6 +680,8 @@ const AerialCourtCanvas: React.FC<AerialCourtCanvasProps> = ({
   const openSpotsCount = match ? match.slots.filter(s => !s.player).length : 4;
   const isFullyBooked = match && openSpotsCount === 0;
 
+  const isVertical = court.orientation === 'vertical';
+
   return (
     <div
       onClick={onSelect}
@@ -696,6 +698,11 @@ const AerialCourtCanvas: React.FC<AerialCourtCanvasProps> = ({
             {court.number}
           </div>
           <span className="font-bold text-xs text-white truncate">{court.name}</span>
+          {isVertical && (
+            <span className="text-[9px] font-mono uppercase bg-yellow-400/15 text-yellow-400 px-1.5 py-0.2 rounded border border-yellow-400/30">
+              Vertical
+            </span>
+          )}
         </div>
 
         {/* Status Badge */}
@@ -728,7 +735,9 @@ const AerialCourtCanvas: React.FC<AerialCourtCanvasProps> = ({
 
       {/* AERIAL BLUEPRINT (Azul reglamentario WPT) */}
       <div
-        className="relative w-full rounded-2xl overflow-hidden border-2 border-sky-400/40 shadow-inner flex flex-col justify-center items-center aspect-[2.2/1] min-h-[145px]"
+        className={`relative w-full rounded-2xl overflow-hidden border-2 border-sky-400/40 shadow-inner flex flex-col justify-center items-center ${
+          isVertical ? 'aspect-[1/1.55] max-h-[340px]' : 'aspect-[2.2/1] min-h-[145px]'
+        }`}
         style={{
           backgroundColor: '#1d4ed8', // Official Royal Court Blue
           backgroundImage: 'radial-gradient(ellipse at center, #2563eb 0%, #1e40af 100%)'
@@ -738,80 +747,141 @@ const AerialCourtCanvas: React.FC<AerialCourtCanvasProps> = ({
         {/* Outer Court Border Line */}
         <div className="absolute inset-2 border border-white/60 pointer-events-none" />
 
-        {/* Center Net Line (Vertical) */}
-        <div className="absolute top-2 bottom-2 left-1/2 w-1 -translate-x-1/2 bg-white/90 shadow-md flex items-center justify-center pointer-events-none z-10">
-          <span className="text-[8px] font-black uppercase text-zinc-900 bg-white px-0.5 py-0.5 rounded -rotate-90">
-            RED
-          </span>
-        </div>
+        {!isVertical ? (
+          /* HORIZONTAL COURT LAYOUT (Lines & Net) */
+          <>
+            {/* Center Net Line (Vertical) */}
+            <div className="absolute top-2 bottom-2 left-1/2 w-1 -translate-x-1/2 bg-white/90 shadow-md flex items-center justify-center pointer-events-none z-10">
+              <span className="text-[8px] font-black uppercase text-zinc-900 bg-white px-0.5 py-0.5 rounded -rotate-90">
+                RED
+              </span>
+            </div>
 
-        {/* Service Lines Team A (Left Half) */}
-        <div className="absolute top-2 bottom-2 left-[30%] w-px bg-white/40 pointer-events-none" />
-        <div className="absolute left-[30%] right-1/2 top-1/2 h-px bg-white/40 pointer-events-none" />
+            {/* Service Lines Team A (Left Half) */}
+            <div className="absolute top-2 bottom-2 left-[30%] w-px bg-white/40 pointer-events-none" />
+            <div className="absolute left-[30%] right-1/2 top-1/2 h-px bg-white/40 pointer-events-none" />
 
-        {/* Service Lines Team B (Right Half) */}
-        <div className="absolute top-2 bottom-2 right-[30%] w-px bg-white/40 pointer-events-none" />
-        <div className="absolute left-1/2 right-[30%] top-1/2 h-px bg-white/40 pointer-events-none" />
+            {/* Service Lines Team B (Right Half) */}
+            <div className="absolute top-2 bottom-2 right-[30%] w-px bg-white/40 pointer-events-none" />
+            <div className="absolute left-1/2 right-[30%] top-1/2 h-px bg-white/40 pointer-events-none" />
 
-        {/* PLAYER CIRCLES PLACEMENT (HORIZONAL):
-            Regla usuario: "Quiero que los círculos de jugador de drive y revés estén a la misma altura, a fondo de pista en la mitad.
-            Si eres derecha, que salga el circulito en la derecha de la pista y si eres revés, en la izquierda de la pista".
+            {/* PLAYER CIRCLES PLACEMENT (HORIZONTAL):
+                A la misma altura, a fondo de pista en la mitad:
+                - Campo A: Columna en la mitad del fondo izquierdo (Revés arriba, Drive abajo)
+                - Campo B: Columna en la mitad del fondo derecho (Drive arriba, Revés abajo)
+            */}
+            <div className="absolute inset-2 z-20 pointer-events-auto">
+              {/* Fondo Campo A (Izquierda): Ambos a la misma altura X en la mitad del fondo */}
+              <div className="absolute top-2 bottom-2 left-1 w-[26%] flex flex-col justify-around items-center">
+                <PlayerCircle
+                  position={1}
+                  side="Revés"
+                  slot={slot1}
+                  currentUser={currentUser}
+                  onJoin={() => onJoinSlot(1)}
+                  onLeave={() => onLeaveSlot(1)}
+                />
+                <PlayerCircle
+                  position={2}
+                  side="Drive"
+                  slot={slot2}
+                  currentUser={currentUser}
+                  onJoin={() => onJoinSlot(2)}
+                  onLeave={() => onLeaveSlot(2)}
+                />
+              </div>
 
-            - Campo A (Izquierda): Fondo de pista está a la izquierda (w-[28%]).
-              Ambos jugadores están A LA MISMA ALTURA respecto al fondo (centrados en el eje X de fondo de pista).
-              Arriba (Lado izquierdo mirando a red) = Revés (Slot 1)
-              Abajo (Lado derecho mirando a red) = Drive (Slot 2)
+              {/* Fondo Campo B (Derecha): Ambos a la misma altura X en la mitad del fondo */}
+              <div className="absolute top-2 bottom-2 right-1 w-[26%] flex flex-col justify-around items-center">
+                <PlayerCircle
+                  position={4}
+                  side="Drive"
+                  slot={slot4}
+                  currentUser={currentUser}
+                  onJoin={() => onJoinSlot(4)}
+                  onLeave={() => onLeaveSlot(4)}
+                />
+                <PlayerCircle
+                  position={3}
+                  side="Revés"
+                  slot={slot3}
+                  currentUser={currentUser}
+                  onJoin={() => onJoinSlot(3)}
+                  onLeave={() => onLeaveSlot(3)}
+                />
+              </div>
+            </div>
+          </>
+        ) : (
+          /* VERTICAL COURT LAYOUT (PISTA 4 EN VERTICAL):
+              A la misma altura, a fondo de pista en la mitad:
+              - Campo Superior: Fila en la mitad del fondo superior (Revés izquierda, Drive derecha)
+              - Campo Inferior: Fila en la mitad del fondo inferior (Revés izquierda, Drive derecha)
+          */
+          <>
+            {/* Center Net Line (Horizontal) */}
+            <div className="absolute left-2 right-2 top-1/2 h-1 -translate-y-1/2 bg-white/90 shadow-md flex items-center justify-center pointer-events-none z-10">
+              <span className="text-[8px] font-black uppercase text-zinc-900 bg-white px-1 py-0.2 rounded">
+                RED
+              </span>
+            </div>
 
-            - Campo B (Derecha): Fondo de pista está a la derecha (w-[28%]).
-              Ambos jugadores están A LA MISMA ALTURA respecto al fondo (centrados en el eje X de fondo de pista).
-              Arriba = Drive (Slot 4)
-              Abajo = Revés (Slot 3)
-        */}
-        <div className="absolute inset-2 z-20 pointer-events-auto">
-          {/* Fondo Campo A (Izquierda): Ambos a la misma altura X en la mitad del fondo */}
-          <div className="absolute top-2 bottom-2 left-1 w-[26%] flex flex-col justify-around items-center">
-            {/* Spot 1: Revés (Arriba / Lado izquierdo) */}
-            <PlayerCircle
-              position={1}
-              side="Revés"
-              slot={slot1}
-              currentUser={currentUser}
-              onJoin={() => onJoinSlot(1)}
-              onLeave={() => onLeaveSlot(1)}
-            />
-            {/* Spot 2: Derecha / Drive (Abajo / Lado derecho) */}
-            <PlayerCircle
-              position={2}
-              side="Drive"
-              slot={slot2}
-              currentUser={currentUser}
-              onJoin={() => onJoinSlot(2)}
-              onLeave={() => onLeaveSlot(2)}
-            />
-          </div>
+            {/* Service Lines Team A (Top Half) */}
+            <div className="absolute left-2 right-2 top-[30%] h-px bg-white/40 pointer-events-none" />
+            <div className="absolute top-[30%] bottom-1/2 left-1/2 w-px bg-white/40 pointer-events-none" />
 
-          {/* Fondo Campo B (Derecha): Ambos a la misma altura X en la mitad del fondo */}
-          <div className="absolute top-2 bottom-2 right-1 w-[26%] flex flex-col justify-around items-center">
-            {/* Spot 4: Derecha / Drive (Arriba / Lado derecho) */}
-            <PlayerCircle
-              position={4}
-              side="Drive"
-              slot={slot4}
-              currentUser={currentUser}
-              onJoin={() => onJoinSlot(4)}
-              onLeave={() => onLeaveSlot(4)}
-            />
-            {/* Spot 3: Revés (Abajo / Lado izquierdo) */}
-            <PlayerCircle
-              position={3}
-              side="Revés"
-              slot={slot3}
-              currentUser={currentUser}
-              onJoin={() => onJoinSlot(3)}
-              onLeave={() => onLeaveSlot(3)}
-            />
-          </div>
-        </div>
+            {/* Service Lines Team B (Bottom Half) */}
+            <div className="absolute left-2 right-2 bottom-[30%] h-px bg-white/40 pointer-events-none" />
+            <div className="absolute top-1/2 bottom-[30%] left-1/2 w-px bg-white/40 pointer-events-none" />
+
+            {/* PLAYER CIRCLES PLACEMENT (VERTICAL):
+                Ambos jugadores a la MISMA ALTURA Y en la mitad de su zona de fondo:
+                - Campo Superior (Team A): Fila en la mitad del fondo superior
+                - Campo Inferior (Team B): Fila en la mitad del fondo inferior
+            */}
+            <div className="absolute inset-2 z-20 pointer-events-auto">
+              {/* Fondo Superior (Team A): Ambos a la misma altura Y */}
+              <div className="absolute left-2 right-2 top-1 h-[26%] flex flex-row justify-around items-center">
+                <PlayerCircle
+                  position={1}
+                  side="Revés"
+                  slot={slot1}
+                  currentUser={currentUser}
+                  onJoin={() => onJoinSlot(1)}
+                  onLeave={() => onLeaveSlot(1)}
+                />
+                <PlayerCircle
+                  position={2}
+                  side="Drive"
+                  slot={slot2}
+                  currentUser={currentUser}
+                  onJoin={() => onJoinSlot(2)}
+                  onLeave={() => onLeaveSlot(2)}
+                />
+              </div>
+
+              {/* Fondo Inferior (Team B): Ambos a la misma altura Y */}
+              <div className="absolute left-2 right-2 bottom-1 h-[26%] flex flex-row justify-around items-center">
+                <PlayerCircle
+                  position={3}
+                  side="Revés"
+                  slot={slot3}
+                  currentUser={currentUser}
+                  onJoin={() => onJoinSlot(3)}
+                  onLeave={() => onLeaveSlot(3)}
+                />
+                <PlayerCircle
+                  position={4}
+                  side="Drive"
+                  slot={slot4}
+                  currentUser={currentUser}
+                  onJoin={() => onJoinSlot(4)}
+                  onLeave={() => onLeaveSlot(4)}
+                />
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Court Bottom Footer with Match Info / Action */}
