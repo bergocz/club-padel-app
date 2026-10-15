@@ -2,8 +2,8 @@ import { ClubTheme } from '../types';
 
 export const CLUBS: ClubTheme[] = [
   {
-    id: 'spadel-club',
-    name: 'Spadel Club',
+    id: 'espadel-club',
+    name: 'Espadel Club',
     tagline: 'Centro Oficial de Pádel & Competición',
     logo: '⚡',
     primaryColor: '#facc15', // Vibrant Athletic Yellow

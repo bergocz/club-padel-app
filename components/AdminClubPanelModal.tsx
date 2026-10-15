@@ -35,7 +35,7 @@ export const AdminClubPanelModal: React.FC<AdminClubPanelModalProps> = ({
     setSelectedPlayer(player);
     setEditLevel(player.level);
     setIsCertified(player.levelCertifiedByClub ?? true);
-    setCoachNotes(player.coachNotes || `Nivel validado por el Director Deportivo de Spadel Club el ${new Date().toLocaleDateString('es-ES')}.`);
+    setCoachNotes(player.coachNotes || `Nivel validado por el Director Deportivo de Espadel Club el ${new Date().toLocaleDateString('es-ES')}.`);
   };
 
   const handleSave = (e: React.FormEvent) => {
@@ -73,7 +73,7 @@ export const AdminClubPanelModal: React.FC<AdminClubPanelModalProps> = ({
               <div className="flex items-center gap-2">
                 <h2 className="text-lg font-bold text-white tracking-tight">Panel de Dirección Deportiva</h2>
                 <span className="text-[10px] font-mono font-bold text-black bg-yellow-400 px-2 py-0.5 rounded-full">
-                  ADMIN SPADEL
+                  ADMIN ESPADEL
                 </span>
               </div>
               <p className="text-xs text-zinc-400">Modificación y certificación oficial de niveles para socios del club</p>
@@ -106,7 +106,7 @@ export const AdminClubPanelModal: React.FC<AdminClubPanelModalProps> = ({
                   type="text"
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
-                  placeholder="Buscar socio por nombre o número (ej: SPADEL-1042)..."
+                  placeholder="Buscar socio por nombre o número (ej: ESPADEL-1042)..."
                   className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl pl-10 pr-4 py-3 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-yellow-400"
                 />
               </div>
@@ -144,7 +144,7 @@ export const AdminClubPanelModal: React.FC<AdminClubPanelModalProps> = ({
                             )}
                           </div>
                           <div className="text-[11px] text-zinc-500 flex items-center gap-2 mt-0.5 font-mono">
-                            <span>{player.clubMemberNumber || 'SOC-SPADEL'}</span>
+                            <span>{player.clubMemberNumber || 'SOC-ESPADEL'}</span>
                             <span>•</span>
                             <span>{player.sidePreference}</span>
                             <span>•</span>
@@ -186,7 +186,7 @@ export const AdminClubPanelModal: React.FC<AdminClubPanelModalProps> = ({
                   />
                   <div>
                     <h3 className="font-bold text-base text-white">{selectedPlayer.name}</h3>
-                    <p className="text-xs text-zinc-400 font-mono">{selectedPlayer.clubMemberNumber} • Socio Spadel Club</p>
+                    <p className="text-xs text-zinc-400 font-mono">{selectedPlayer.clubMemberNumber} • Socio Espadel Club</p>
                   </div>
                 </div>
 
@@ -239,7 +239,7 @@ export const AdminClubPanelModal: React.FC<AdminClubPanelModalProps> = ({
                 <div className="flex items-center gap-3">
                   <ShieldCheck className={`w-6 h-6 ${isCertified ? 'text-yellow-400' : 'text-zinc-600'}`} />
                   <div>
-                    <div className="text-xs font-bold text-white">Certificar Nivel Oficial por Spadel Club</div>
+                    <div className="text-xs font-bold text-white">Certificar Nivel Oficial por Espadel Club</div>
                     <div className="text-[11px] text-zinc-400">
                       Muestra la insignia oficial de nivel verificado por los monitores del club.
                     </div>
@@ -289,7 +289,7 @@ export const AdminClubPanelModal: React.FC<AdminClubPanelModalProps> = ({
                   className="flex-1 py-3 rounded-2xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-xs shadow-xl shadow-yellow-400/20 transition flex items-center justify-center gap-2"
                 >
                   <Save className="w-4 h-4" />
-                  <span>Guardar Nivel en Spadel Club</span>
+                  <span>Guardar Nivel en Espadel Club</span>
                 </button>
               </div>
             </form>

@@ -57,7 +57,7 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
 
   const handleEmailContinue = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) setName('Socio Spadel');
+    if (!name.trim()) setName('Socio Espadel');
     setStage(2);
   };
 
@@ -96,9 +96,9 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
       sidePreference,
       level: calculatedResult?.level || 3.5,
       category: calculatedResult?.category || 'medio',
-      clubMemberNumber: `SPADEL-${Math.floor(1000 + Math.random() * 9000)}`,
+      clubMemberNumber: `ESPADEL-${Math.floor(1000 + Math.random() * 9000)}`,
       levelCertifiedByClub: false,
-      coachNotes: 'Nivel inicial determinado mediante el test diagnóstico de entrada a Spadel Club.',
+      coachNotes: 'Nivel inicial determinado mediante el test diagnóstico de entrada a Espadel Club.',
       matchesPlayed: 0,
       winRate: 0,
       radarStats: calculatedResult?.radarStats || {
@@ -116,7 +116,7 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl animate-in fade-in duration-300">
       <div className="relative w-full max-w-xl bg-zinc-950 border border-yellow-500/30 rounded-3xl shadow-2xl shadow-yellow-500/10 overflow-hidden flex flex-col max-h-[92vh]">
-        {/* Top Accent Line in Spadel Yellow */}
+        {/* Top Accent Line in Espadel Yellow */}
         <div className="h-1.5 w-full bg-gradient-to-r from-yellow-400 via-amber-300 to-yellow-500" />
 
         {/* Modal Header */}
@@ -127,7 +127,7 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
             </div>
             <div>
               <span className="text-base font-black tracking-tight text-white flex items-center gap-1.5">
-                Spadel Club <span className="text-xs font-mono font-bold text-yellow-400 bg-yellow-400/10 px-2 py-0.5 rounded-full border border-yellow-400/20">OFICIAL</span>
+                Espadel Club <span className="text-xs font-mono font-bold text-yellow-400 bg-yellow-400/10 px-2 py-0.5 rounded-full border border-yellow-400/20">OFICIAL</span>
               </span>
               <p className="text-[11px] text-zinc-400">Bienvenido al club • Registro & Nivelación</p>
             </div>
@@ -150,7 +150,7 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
             <div className="space-y-6 py-2">
               <div className="text-center max-w-sm mx-auto">
                 <h3 className="text-2xl font-black text-white tracking-tight mb-2">
-                  Inicia sesión en Spadel Club
+                  Inicia sesión en Espadel Club
                 </h3>
                 <p className="text-xs text-zinc-400 leading-relaxed">
                   Accede a la app oficial para reservar pistas, unirte a partidos abiertos de tu nivel y gestionar tus partidos.
@@ -424,7 +424,7 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
               </div>
 
               <h3 className="text-2xl font-black text-white tracking-tight mb-1">
-                ¡Ficha Asignada en Spadel Club!
+                ¡Ficha Asignada en Espadel Club!
               </h3>
               <p className="text-xs text-zinc-400 max-w-sm mx-auto mb-5">
                 Hemos calculado tu nivel inicial para colocarte en partidos equilibrados.
@@ -457,7 +457,7 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
                 onClick={handleFinishOnboarding}
                 className="w-full py-3.5 rounded-2xl bg-yellow-400 hover:bg-yellow-300 text-black font-black text-sm shadow-xl shadow-yellow-400/20 transition flex items-center justify-center gap-2"
               >
-                <span>Entrar a Spadel Club</span>
+                <span>Entrar a Espadel Club</span>
                 <ChevronRight className="w-4 h-4 stroke-[3]" />
               </button>
             </div>

@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'PadelClub OS — Tu Club de Pádel',
-  description: 'Reserva de pistas, partidos abiertos por niveles y comunidad de tu club.',
+  title: 'Espadel Club — Aplicación Oficial del Club',
+  description: 'Reserva de pistas, partidos abiertos equilibrados por niveles y comunidad de socios de Espadel Club.',
 };
 
 export default function RootLayout({

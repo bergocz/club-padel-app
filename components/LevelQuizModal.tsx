@@ -80,7 +80,7 @@ export const LevelQuizModal: React.FC<LevelQuizModalProps> = ({
               <Zap className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-white tracking-tight">Test Diagnóstico de Nivel Spadel</h2>
+              <h2 className="text-lg font-bold text-white tracking-tight">Test Diagnóstico de Nivel Espadel</h2>
               <p className="text-xs text-zinc-400">Escala Oficial de Pádel (1.0 — 7.0)</p>
             </div>
           </div>

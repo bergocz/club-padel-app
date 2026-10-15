@@ -3,7 +3,7 @@ import { OpenMatch } from '../types';
 export const INITIAL_MATCHES: OpenMatch[] = [
   {
     id: 'match-1',
-    courtName: 'Pista 1 — Spadel Central Panorámica',
+    courtName: 'Pista 1 — Espadel Central Panorámica',
     courtType: 'Central',
     date: 'Hoy, 15 Oct',
     time: '18:00 - 19:30',
@@ -72,7 +72,7 @@ export const INITIAL_MATCHES: OpenMatch[] = [
   },
   {
     id: 'match-2',
-    courtName: 'Pista 2 — Spadel Indoor Pro',
+    courtName: 'Pista 2 — Espadel Indoor Pro',
     courtType: 'Panorámica Cubierta',
     date: 'Hoy, 15 Oct',
     time: '19:30 - 21:00',
@@ -132,7 +132,7 @@ export const INITIAL_MATCHES: OpenMatch[] = [
   },
   {
     id: 'match-3',
-    courtName: 'Pista 1 — Spadel Central Panorámica',
+    courtName: 'Pista 1 — Espadel Central Panorámica',
     courtType: 'Central',
     date: 'Mañana, 16 Oct',
     time: '20:00 - 21:30',
@@ -142,7 +142,7 @@ export const INITIAL_MATCHES: OpenMatch[] = [
     maxLevel: 6.5,
     status: 'open',
     isCompetitive: true,
-    notes: 'Nivel Avanzado / Competición federada Spadel. Ritmo alto, x3 y bajadas de pared.',
+    notes: 'Nivel Avanzado / Competición federada Espadel. Ritmo alto, x3 y bajadas de pared.',
     slots: [
       {
         position: 1,
@@ -180,7 +180,7 @@ export const INITIAL_MATCHES: OpenMatch[] = [
   },
   {
     id: 'match-4',
-    courtName: 'Pista 3 — Spadel Cristal Cubierta',
+    courtName: 'Pista 3 — Espadel Cristal Cubierta',
     courtType: 'Panorámica Cubierta',
     date: 'Mañana, 16 Oct',
     time: '18:30 - 20:00',

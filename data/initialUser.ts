@@ -10,9 +10,9 @@ export const INITIAL_USER: Player = {
   sidePreference: 'Revés',
   matchesPlayed: 48,
   winRate: 62,
-  clubMemberNumber: 'SPADEL-1042',
+  clubMemberNumber: 'ESPADEL-1042',
   levelCertifiedByClub: true,
-  coachNotes: 'Nivel validado por el Director Deportivo de Spadel Club tras evaluación en pista.',
+  coachNotes: 'Nivel validado por el Director Deportivo de Espadel Club tras evaluación en pista.',
   radarStats: {
     tecnica: 7,
     paredes: 6,
@@ -34,7 +34,7 @@ export const MOCK_CLUB_PLAYERS: Player[] = [
     sidePreference: 'Revés',
     matchesPlayed: 72,
     winRate: 58,
-    clubMemberNumber: 'SPADEL-0824',
+    clubMemberNumber: 'ESPADEL-0824',
     levelCertifiedByClub: true,
     coachNotes: 'Buen ritmo de fondo y volea sólida.',
     radarStats: { tecnica: 7, paredes: 7, volea: 8, aereo: 6, tactica: 7 }
@@ -49,7 +49,7 @@ export const MOCK_CLUB_PLAYERS: Player[] = [
     sidePreference: 'Drive',
     matchesPlayed: 41,
     winRate: 61,
-    clubMemberNumber: 'SPADEL-0919',
+    clubMemberNumber: 'ESPADEL-0919',
     levelCertifiedByClub: false,
     coachNotes: '',
     radarStats: { tecnica: 6, paredes: 7, volea: 7, aereo: 6, tactica: 6 }
@@ -64,7 +64,7 @@ export const MOCK_CLUB_PLAYERS: Player[] = [
     sidePreference: 'Drive',
     matchesPlayed: 110,
     winRate: 65,
-    clubMemberNumber: 'SPADEL-0402',
+    clubMemberNumber: 'ESPADEL-0402',
     levelCertifiedByClub: true,
     coachNotes: 'Excelente zurdo en el drive, remate por 3 consolidado.',
     radarStats: { tecnica: 8, paredes: 8, volea: 8, aereo: 7, tactica: 8 }
@@ -79,7 +79,7 @@ export const MOCK_CLUB_PLAYERS: Player[] = [
     sidePreference: 'Indiferente',
     matchesPlayed: 14,
     winRate: 45,
-    clubMemberNumber: 'SPADEL-1150',
+    clubMemberNumber: 'ESPADEL-1150',
     levelCertifiedByClub: true,
     coachNotes: 'Iniciación con buena progresión en pared de fondo.',
     radarStats: { tecnica: 4, paredes: 3, volea: 4, aereo: 3, tactica: 4 }
@@ -94,9 +94,9 @@ export const MOCK_CLUB_PLAYERS: Player[] = [
     sidePreference: 'Revés',
     matchesPlayed: 230,
     winRate: 74,
-    clubMemberNumber: 'SPADEL-0014',
+    clubMemberNumber: 'ESPADEL-0014',
     levelCertifiedByClub: true,
-    coachNotes: 'Jugador federado equipo A de Spadel Club.',
+    coachNotes: 'Jugador federado equipo A de Espadel Club.',
     radarStats: { tecnica: 9, paredes: 9, volea: 9, aereo: 9, tactica: 9 }
   }
 ];

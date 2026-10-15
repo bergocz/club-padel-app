@@ -19,7 +19,7 @@ import { AmericanaManager } from '../components/americana/AmericanaManager';
 import { Plus, Sparkles, Filter, Users, Flame, Calendar, Trophy, ShieldAlert, Award, KeyRound, ShieldCheck, Zap, Shuffle } from 'lucide-react';
 
 export default function HomePage() {
-  const [currentClub, setCurrentClub] = useState<ClubTheme>(CLUBS[0]); // Spadel Club
+  const [currentClub, setCurrentClub] = useState<ClubTheme>(CLUBS[0]); // Espadel Club
   const [currentUser, setCurrentUser] = useState<Player>(INITIAL_USER);
   const [clubPlayers, setClubPlayers] = useState<Player[]>(MOCK_CLUB_PLAYERS);
   const [matches, setMatches] = useState<OpenMatch[]>(INITIAL_MATCHES);
@@ -201,7 +201,7 @@ export default function HomePage() {
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
-        {/* Spadel Club Hero Banner */}
+        {/* Espadel Club Hero Banner */}
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-zinc-950 via-zinc-900 to-black border border-yellow-500/25 p-6 sm:p-8 shadow-2xl shadow-yellow-500/5">
           {/* Yellow Ambient Glow */}
           <div
@@ -223,7 +223,7 @@ export default function HomePage() {
               </div>
 
               <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-white leading-tight mb-2">
-                Partidos abiertos y reservas en <span className="text-yellow-400">Spadel Club</span>
+                Partidos abiertos y reservas en <span className="text-yellow-400">Espadel Club</span>
               </h1>
               <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed mb-4">
                 La app oficial de tu club. Únete a partidos con socios de tu mismo nivel (1.0 — 7.0), reserva pista sin comisiones de terceros y con niveles verificados por la dirección deportiva.
@@ -395,7 +395,7 @@ export default function HomePage() {
                 <Users className="w-12 h-12 text-zinc-600 mx-auto mb-3" />
                 <h3 className="text-base font-bold text-white mb-1">No hay partidos con este filtro</h3>
                 <p className="text-xs text-zinc-400 max-w-sm mx-auto mb-4">
-                  Sé el primero en abrir pista en este nivel y deja que el resto de socios de Spadel se sumen.
+                  Sé el primero en abrir pista en este nivel y deja que el resto de socios de Espadel se sumen.
                 </p>
                 <button
                   onClick={() => setIsCreateMatchOpen(true)}

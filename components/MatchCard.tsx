@@ -213,7 +213,7 @@ const PlayerSlotCard: React.FC<PlayerSlotCardProps> = ({
             </span>
             <span className="text-[10px] text-zinc-500">• {slot.player.sidePreference}</span>
             {slot.player.levelCertifiedByClub && (
-              <span title="Nivel certificado por Spadel Club" className="text-yellow-400 ml-0.5">
+              <span title="Nivel certificado por Espadel Club" className="text-yellow-400 ml-0.5">
                 <ShieldCheck className="w-3 h-3 fill-yellow-400/20" />
               </span>
             )}

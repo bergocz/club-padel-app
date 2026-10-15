@@ -25,7 +25,7 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
   const [minLevel, setMinLevel] = useState(Math.max(1.0, Math.round((currentUser.level - 0.5) * 10) / 10));
   const [maxLevel, setMaxLevel] = useState(Math.min(7.0, Math.round((currentUser.level + 0.5) * 10) / 10));
   const [isCompetitive, setIsCompetitive] = useState(true);
-  const [notes, setNotes] = useState('Partido abierto Spadel, busco cerrar pista pronto.');
+  const [notes, setNotes] = useState('Partido abierto Espadel, busco cerrar pista pronto.');
   const [preferredSide, setPreferredSide] = useState<'Revés' | 'Drive'>(currentUser.sidePreference === 'Drive' ? 'Drive' : 'Revés');
 
   if (!isOpen) return null;
@@ -73,7 +73,7 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
         {/* Header */}
         <div className="px-6 py-5 border-b border-zinc-900 flex items-center justify-between bg-zinc-950/80">
           <div>
-            <h2 className="text-lg font-bold text-white tracking-tight">Crear Partido Abierto en Spadel Club</h2>
+            <h2 className="text-lg font-bold text-white tracking-tight">Crear Partido Abierto en Espadel Club</h2>
             <p className="text-xs text-zinc-400">Reserva tu plaza y abre las otras 3 a los socios del club</p>
           </div>
           <button
@@ -88,7 +88,7 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
         <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-5 text-sm">
           {/* Court Selection */}
           <div>
-            <label className="block text-xs font-semibold text-zinc-300 mb-2">Selecciona Pista Spadel</label>
+            <label className="block text-xs font-semibold text-zinc-300 mb-2">Selecciona Pista Espadel</label>
             <div className="grid grid-cols-2 gap-2">
               {COURTS.map(court => (
                 <button
@@ -189,7 +189,7 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
               </div>
             </div>
             <p className="text-[11px] text-zinc-400 mt-2">
-              Tu nivel actual en Spadel es <strong>{currentUser.level.toFixed(1)}</strong>.
+              Tu nivel actual en Espadel es <strong>{currentUser.level.toFixed(1)}</strong>.
             </p>
           </div>
 
@@ -251,7 +251,7 @@ export const CreateMatchModal: React.FC<CreateMatchModalProps> = ({
               value={notes}
               onChange={e => setNotes(e.target.value)}
               className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-yellow-400"
-              placeholder="Ej: Bolas nuevas Spadel, buscamos cerrar pista pronto"
+              placeholder="Ej: Bolas nuevas Espadel, buscamos cerrar pista pronto"
             />
           </div>
 

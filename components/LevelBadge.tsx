@@ -49,7 +49,7 @@ export const LevelBadge: React.FC<LevelBadgeProps> = ({
   return (
     <span
       className={`inline-flex items-center rounded-full border font-mono tracking-tight font-medium ${colors.bg} ${sizeClasses[size]}`}
-      title={`Nivel ${level.toFixed(1)} — ${colors.label}${isCertified ? ' (Certificado por Spadel Club)' : ''}`}
+      title={`Nivel ${level.toFixed(1)} — ${colors.label}${isCertified ? ' (Certificado por Espadel Club)' : ''}`}
     >
       <span className={`w-1.5 h-1.5 rounded-full ${colors.dot} animate-pulse`} />
       <span className="font-bold">{level.toFixed(1)}</span>
@@ -59,7 +59,7 @@ export const LevelBadge: React.FC<LevelBadgeProps> = ({
         </span>
       )}
       {isCertified && (
-        <span className="flex items-center text-yellow-400" title="Nivel oficial validado por Spadel Club">
+        <span className="flex items-center text-yellow-400" title="Nivel oficial validado por Espadel Club">
           <ShieldCheck className="w-3.5 h-3.5 fill-yellow-400/20" />
         </span>
       )}

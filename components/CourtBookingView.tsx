@@ -61,7 +61,7 @@ export const CourtBookingView: React.FC<CourtBookingViewProps> = ({
         <div>
           <h2 className="text-xl font-black text-white tracking-tight flex items-center gap-2">
             <Calendar className="w-5 h-5 text-yellow-400" />
-            Reserva de Pistas Spadel Club
+            Reserva de Pistas Espadel Club
           </h2>
           <p className="text-xs text-zinc-400 mt-1">
             Reserva la pista completa para tu grupo privado o ábrela a socios del club para completar plaza

@@ -59,7 +59,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
         <div className="px-6 py-5 border-b border-zinc-900 flex items-center justify-between bg-zinc-950/80">
           <div>
             <h2 className="text-lg font-bold text-white tracking-tight">Ficha del Socio</h2>
-            <p className="text-xs text-zinc-400">Perfil verificado en la base de datos de Spadel Club</p>
+            <p className="text-xs text-zinc-400">Perfil verificado en la base de datos de Espadel Club</p>
           </div>
           <button
             onClick={onClose}

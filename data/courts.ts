@@ -3,7 +3,7 @@ import { Court } from '../types';
 export const COURTS: Court[] = [
   {
     id: 'court-1',
-    name: 'Pista 1 — Spadel Central Panorámica',
+    name: 'Pista 1 — Espadel Central Panorámica',
     type: 'Central',
     surface: 'Mondo Supercourt',
     indoor: true,
@@ -13,7 +13,7 @@ export const COURTS: Court[] = [
   },
   {
     id: 'court-2',
-    name: 'Pista 2 — Spadel Indoor Pro',
+    name: 'Pista 2 — Espadel Indoor Pro',
     type: 'Panorámica Cubierta',
     surface: 'Mondo Supercourt',
     indoor: true,
@@ -23,7 +23,7 @@ export const COURTS: Court[] = [
   },
   {
     id: 'court-3',
-    name: 'Pista 3 — Spadel Cristal Cubierta',
+    name: 'Pista 3 — Espadel Cristal Cubierta',
     type: 'Panorámica Cubierta',
     surface: 'Césped Texturado',
     indoor: true,
@@ -33,7 +33,7 @@ export const COURTS: Court[] = [
   },
   {
     id: 'court-4',
-    name: 'Pista 4 — Spadel Sunset Outdoor',
+    name: 'Pista 4 — Espadel Sunset Outdoor',
     type: 'Exterior',
     surface: 'Césped Texturado',
     indoor: false,
