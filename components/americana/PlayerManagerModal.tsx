@@ -225,10 +225,17 @@ export const PlayerManagerModal: React.FC<PlayerManagerModalProps> = ({
               </button>
               <button
                 type="button"
+                onClick={() => handleLoadPreset(20)}
+                className="px-2.5 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 text-xs font-bold transition border border-zinc-800 cursor-pointer"
+              >
+                20 Jugadores (5 pistas)
+              </button>
+              <button
+                type="button"
                 onClick={() => handleLoadPreset(24)}
                 className="px-2.5 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 text-xs font-bold transition border border-zinc-800 cursor-pointer"
               >
-                24 Jugadores (6 pistas llenas)
+                24 Jugadores (6 pistas)
               </button>
               {players.length > 0 && (
                 <button

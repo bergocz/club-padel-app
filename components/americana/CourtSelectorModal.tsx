@@ -71,15 +71,15 @@ export const CourtSelectorModal: React.FC<CourtSelectorModalProps> = ({
             <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400">
               Selección Rápida:
             </span>
-            <div className="flex items-center gap-1.5">
-              {[2, 3, 4, 6].map(num => (
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {[2, 3, 4, 5, 6].map(num => (
                 <button
                   key={num}
                   type="button"
                   onClick={() => handleSelectCount(num)}
                   className={`px-3 py-1 rounded-xl text-xs font-bold transition cursor-pointer ${
                     activeCount === num
-                      ? 'bg-yellow-400 text-black font-black shadow-md shadow-yellow-400/20'
+                      ? 'bg-yellow-400 text-black font-black shadow-md shadow-yellow-400/20 ring-1 ring-yellow-300'
                       : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800'
                   }`}
                 >
