@@ -15,15 +15,15 @@ import { ProfileModal } from '../components/ProfileModal';
 import { B2BDemoDrawer } from '../components/B2BDemoDrawer';
 import { AdminClubPanelModal } from '../components/AdminClubPanelModal';
 import { OnboardingAuthModal } from '../components/OnboardingAuthModal';
-import { AmericanaManager } from '../components/americana/AmericanaManager';
-import { Plus, Sparkles, Filter, Users, Flame, Calendar, Trophy, ShieldAlert, Award, KeyRound, ShieldCheck, Zap, Shuffle } from 'lucide-react';
+import { AerialClubCourtsView } from '../components/AerialClubCourtsView';
+import { Plus, Sparkles, Filter, Users, Flame, Calendar, Trophy, ShieldAlert, Award, KeyRound, ShieldCheck, Zap, Eye } from 'lucide-react';
 
 export default function HomePage() {
   const [currentClub, setCurrentClub] = useState<ClubTheme>(CLUBS[0]); // Espadel Club
   const [currentUser, setCurrentUser] = useState<Player>(INITIAL_USER);
   const [clubPlayers, setClubPlayers] = useState<Player[]>(MOCK_CLUB_PLAYERS);
   const [matches, setMatches] = useState<OpenMatch[]>(INITIAL_MATCHES);
-  const [activeTab, setActiveTab] = useState<'americana' | 'matches' | 'booking' | 'profile'>('americana');
+  const [activeTab, setActiveTab] = useState<'aerial' | 'matches' | 'booking' | 'profile'>('aerial');
 
   // Modals
   const [isQuizOpen, setIsQuizOpen] = useState(false);
@@ -35,7 +35,7 @@ export default function HomePage() {
 
   // Check if onboarding was already done in this session
   useEffect(() => {
-    const hasSeenOnboarding = sessionStorage.getItem('spadel_onboarding_done');
+    const hasSeenOnboarding = sessionStorage.getItem('espadel_onboarding_done');
     if (!hasSeenOnboarding) {
       setIsOnboardingOpen(true);
     }
@@ -87,7 +87,7 @@ export default function HomePage() {
 
   const handleCreateMatch = (newMatch: OpenMatch) => {
     setMatches(prev => [newMatch, ...prev]);
-    setActiveTab('matches');
+    setActiveTab('aerial');
   };
 
   const handleSaveLevel = (data: Partial<Player>) => {
@@ -162,7 +162,7 @@ export default function HomePage() {
   const handleCompleteOnboarding = (newUser: Player) => {
     setCurrentUser(newUser);
     setClubPlayers(prev => [newUser, ...prev.filter(p => p.id !== newUser.id && p.id !== 'usr_me')]);
-    sessionStorage.setItem('spadel_onboarding_done', 'true');
+    sessionStorage.setItem('espadel_onboarding_done', 'true');
     setIsOnboardingOpen(false);
   };
 
@@ -226,7 +226,7 @@ export default function HomePage() {
                 Partidos abiertos y reservas en <span className="text-yellow-400">Espadel Club</span>
               </h1>
               <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed mb-4">
-                La app oficial de tu club. Únete a partidos con socios de tu mismo nivel (1.0 — 7.0), reserva pista sin comisiones de terceros y con niveles verificados por la dirección deportiva.
+                La app oficial de tu club. Consulta el <strong>plano aéreo de pistas</strong>, únete en tu posición preferida (<strong>Revés a la izquierda</strong>, <strong>Derecha a la derecha</strong>) y reserva pista sin comisiones de intermediarios.
               </p>
 
               {/* User Skill Bar Banner */}
@@ -249,6 +249,10 @@ export default function HomePage() {
                     isCertified={currentUser.levelCertifiedByClub}
                   />
                 </div>
+                <div className="h-4 w-px bg-zinc-800 hidden sm:block" />
+                <div className="text-xs font-mono text-zinc-400">
+                  Posición: <strong className="text-yellow-400">{currentUser.sidePreference}</strong>
+                </div>
                 <button
                   onClick={() => setIsQuizOpen(true)}
                   className="text-xs text-yellow-400 hover:text-yellow-300 font-bold underline underline-offset-2 flex items-center gap-1 ml-auto"
@@ -262,50 +266,50 @@ export default function HomePage() {
             {/* Quick Actions */}
             <div className="flex flex-col sm:flex-row lg:flex-col gap-2.5 shrink-0">
               <button
-                onClick={() => setActiveTab('americana')}
-                className={`px-6 py-3.5 rounded-2xl font-black text-xs sm:text-sm shadow-xl transition flex items-center justify-center gap-2 cursor-pointer ${
-                  activeTab === 'americana'
-                    ? 'bg-yellow-400 text-black shadow-yellow-400/25 ring-2 ring-yellow-300'
-                    : 'bg-yellow-400/15 border border-yellow-400/40 text-yellow-400 hover:bg-yellow-400/25'
+                onClick={() => setActiveTab('aerial')}
+                className={`px-6 py-3.5 rounded-2xl font-black text-xs sm:text-sm shadow-xl transition flex items-center justify-center gap-2 ${
+                  activeTab === 'aerial'
+                    ? 'bg-yellow-400 text-black shadow-yellow-400/20'
+                    : 'bg-zinc-900 hover:bg-zinc-800 border border-yellow-400/40 text-yellow-300'
                 }`}
               >
-                <Shuffle className="w-4 h-4 stroke-[3]" />
-                <span>Americana de 6 Pistas</span>
+                <Eye className="w-4 h-4" />
+                <span>Visión Aérea (6 Pistas)</span>
               </button>
 
               <button
                 onClick={() => setIsCreateMatchOpen(true)}
-                className="px-6 py-3 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-white font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 cursor-pointer"
+                className="px-6 py-3 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-white font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2"
               >
-                <Plus className="w-4 h-4 text-yellow-400 stroke-[3]" />
+                <Plus className="w-4 h-4 stroke-[3]" />
                 <span>Crear Partido Abierto</span>
               </button>
 
               <button
-                onClick={() => setActiveTab('booking')}
-                className="px-6 py-3 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-white font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <Calendar className="w-4 h-4 text-zinc-400" />
-                <span>Ver Pistas del Club</span>
-              </button>
-
-              <button
                 onClick={() => setIsAdminOpen(true)}
-                className="px-6 py-2.5 rounded-2xl bg-zinc-900/80 hover:bg-yellow-400/10 border border-yellow-400/30 text-yellow-300 font-bold text-xs transition flex items-center justify-center gap-2 cursor-pointer"
+                className="px-6 py-2.5 rounded-2xl bg-zinc-900/80 hover:bg-yellow-400/10 border border-yellow-400/30 text-yellow-300 font-bold text-xs transition flex items-center justify-center gap-2"
               >
                 <KeyRound className="w-3.5 h-3.5" />
-                <span>Panel Modificar Niveles (Club)</span>
+                <span>Panel Director (Modificar Niveles)</span>
               </button>
             </div>
           </div>
         </div>
 
-        {/* TAB 0: AMERICANA DE PÁDEL */}
-        {activeTab === 'americana' && (
-          <AmericanaManager />
+        {/* TAB 1: VISIÓN AÉREA DE PISTAS (NAVE A Y NAVE B - 6 PISTAS) */}
+        {activeTab === 'aerial' && (
+          <AerialClubCourtsView
+            matches={matches}
+            currentUser={currentUser}
+            onJoinMatchSlot={handleJoinSlot}
+            onLeaveMatchSlot={handleLeaveSlot}
+            onOpenCreateMatchWithCourtNumber={(courtNum) => {
+              setIsCreateMatchOpen(true);
+            }}
+          />
         )}
 
-        {/* TAB 1: PARTIDOS ABIERTOS */}
+        {/* TAB 2: PARTIDOS ABIERTOS (FEED) */}
         {activeTab === 'matches' && (
           <div className="space-y-6">
             {/* Filter Tabs Bar */}
@@ -408,7 +412,7 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* TAB 2: RESERVA DE PISTAS */}
+        {/* TAB 3: RESERVA DE PISTAS */}
         {activeTab === 'booking' && (
           <CourtBookingView
             currentUser={currentUser}
@@ -418,7 +422,7 @@ export default function HomePage() {
           />
         )}
 
-        {/* TAB 3: MI PERFIL (MOBILE VIEW) */}
+        {/* TAB 4: MI PERFIL (MOBILE VIEW) */}
         {activeTab === 'profile' && (
           <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 text-center max-w-md mx-auto shadow-xl">
             <img
@@ -463,7 +467,11 @@ export default function HomePage() {
           </div>
 
           <div className="flex items-center gap-4 text-[11px]">
-            <button onClick={() => setIsAdminOpen(true)} className="text-yellow-400 hover:underline font-bold">
+            <button onClick={() => setActiveTab('aerial')} className="text-yellow-400 hover:underline font-bold">
+              Visión Aérea 6 Pistas
+            </button>
+            <span>•</span>
+            <button onClick={() => setIsAdminOpen(true)} className="text-zinc-400 hover:underline font-semibold">
               Panel Director (Modificar Niveles)
             </button>
             <span>•</span>

@@ -13,7 +13,7 @@ export const INITIAL_MATCHES: OpenMatch[] = [
     maxLevel: 4.2,
     status: 'almost_full',
     isCompetitive: true,
-    notes: '¡Falta 1 jugador para cerrar pista! Partido dinámico con bolas Head Padel Pro nuevas.',
+    notes: '¡Falta 1 jugador para cerrar pista! Bolas nuevas Head Pro.',
     slots: [
       {
         position: 1,
@@ -25,9 +25,10 @@ export const INITIAL_MATCHES: OpenMatch[] = [
           level: 3.7,
           category: 'medio',
           hand: 'Derecha',
-          sidePreference: 'Revés',
+          sidePreference: 'Revés', // Juega a la izquierda
           matchesPlayed: 72,
           winRate: 58,
+          levelCertifiedByClub: true,
           radarStats: { tecnica: 7, paredes: 7, volea: 8, aereo: 6, tactica: 7 }
         }
       },
@@ -41,9 +42,10 @@ export const INITIAL_MATCHES: OpenMatch[] = [
           level: 3.5,
           category: 'medio',
           hand: 'Derecha',
-          sidePreference: 'Drive',
+          sidePreference: 'Drive', // Juega a la derecha
           matchesPlayed: 41,
           winRate: 61,
+          levelCertifiedByClub: false,
           radarStats: { tecnica: 6, paredes: 7, volea: 7, aereo: 6, tactica: 6 }
         }
       },
@@ -54,19 +56,20 @@ export const INITIAL_MATCHES: OpenMatch[] = [
           id: 'p3',
           name: 'Sergio Valdés',
           avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=300&q=80',
-          level: 3.9,
+          level: 4.2,
           category: 'medio',
           hand: 'Zurdo',
-          sidePreference: 'Drive',
+          sidePreference: 'Drive', // Juega a la derecha
           matchesPlayed: 110,
           winRate: 65,
+          levelCertifiedByClub: true,
           radarStats: { tecnica: 8, paredes: 8, volea: 8, aereo: 7, tactica: 8 }
         }
       },
       {
         position: 4,
         team: 'B',
-        player: undefined // PLAZA LIBRE
+        player: undefined // PLAZA LIBRE (Revés)
       }
     ]
   },
@@ -82,7 +85,7 @@ export const INITIAL_MATCHES: OpenMatch[] = [
     maxLevel: 2.8,
     status: 'open',
     isCompetitive: false,
-    notes: 'Partido iniciación/amistoso para practicar salida de pared y ganar ritmo sin presión.',
+    notes: 'Partido iniciación/amistoso para practicar salida de pared sin presión.',
     slots: [
       {
         position: 1,
@@ -94,7 +97,7 @@ export const INITIAL_MATCHES: OpenMatch[] = [
           level: 2.3,
           category: 'iniciacion',
           hand: 'Derecha',
-          sidePreference: 'Indiferente',
+          sidePreference: 'Revés', // Juega a la izquierda
           matchesPlayed: 14,
           winRate: 45,
           levelCertifiedByClub: true,
@@ -104,7 +107,7 @@ export const INITIAL_MATCHES: OpenMatch[] = [
       {
         position: 2,
         team: 'A',
-        player: undefined // PLAZA LIBRE
+        player: undefined // PLAZA LIBRE (Drive)
       },
       {
         position: 3,
@@ -116,7 +119,7 @@ export const INITIAL_MATCHES: OpenMatch[] = [
           level: 2.6,
           category: 'iniciacion',
           hand: 'Derecha',
-          sidePreference: 'Drive',
+          sidePreference: 'Drive', // Juega a la derecha
           matchesPlayed: 22,
           winRate: 50,
           levelCertifiedByClub: false,
@@ -126,14 +129,14 @@ export const INITIAL_MATCHES: OpenMatch[] = [
       {
         position: 4,
         team: 'B',
-        player: undefined // PLAZA LIBRE
+        player: undefined // PLAZA LIBRE (Revés)
       }
     ]
   },
   {
     id: 'match-3',
-    courtName: 'Pista 1 — Espadel Central Panorámica',
-    courtType: 'Central',
+    courtName: 'Pista 3 — Cubierta Pro',
+    courtType: 'Panorámica Cubierta',
     date: 'Mañana, 16 Oct',
     time: '20:00 - 21:30',
     durationMinutes: 90,
@@ -142,7 +145,7 @@ export const INITIAL_MATCHES: OpenMatch[] = [
     maxLevel: 6.5,
     status: 'open',
     isCompetitive: true,
-    notes: 'Nivel Avanzado / Competición federada Espadel. Ritmo alto, x3 y bajadas de pared.',
+    notes: 'Nivel Avanzado / Competición federada Espadel. Ritmo alto, x3 y bajadas.',
     slots: [
       {
         position: 1,
@@ -154,7 +157,7 @@ export const INITIAL_MATCHES: OpenMatch[] = [
           level: 5.6,
           category: 'avanzado',
           hand: 'Derecha',
-          sidePreference: 'Revés',
+          sidePreference: 'Revés', // Juega a la izquierda
           matchesPlayed: 230,
           winRate: 74,
           levelCertifiedByClub: true,
@@ -164,33 +167,33 @@ export const INITIAL_MATCHES: OpenMatch[] = [
       {
         position: 2,
         team: 'A',
-        player: undefined // PLAZA LIBRE
+        player: undefined // PLAZA LIBRE (Drive)
       },
       {
         position: 3,
         team: 'B',
-        player: undefined // PLAZA LIBRE
+        player: undefined // PLAZA LIBRE (Revés)
       },
       {
         position: 4,
         team: 'B',
-        player: undefined // PLAZA LIBRE
+        player: undefined // PLAZA LIBRE (Drive)
       }
     ]
   },
   {
     id: 'match-4',
-    courtName: 'Pista 3 — Espadel Cristal Cubierta',
+    courtName: 'Pista 4 — Arena Vertical',
     courtType: 'Panorámica Cubierta',
-    date: 'Mañana, 16 Oct',
+    date: 'Hoy, 15 Oct',
     time: '18:30 - 20:00',
     durationMinutes: 90,
-    pricePerPlayer: 7.0,
+    pricePerPlayer: 7.5,
     minLevel: 3.5,
     maxLevel: 4.8,
     status: 'open',
     isCompetitive: true,
-    notes: 'Partido equilibrado nivel medio alto. Traemos caña y tercer tiempo en la cafetería.',
+    notes: 'Pista central vertical en Nave B. Nivel medio-alto.',
     slots: [
       {
         position: 1,
@@ -202,7 +205,7 @@ export const INITIAL_MATCHES: OpenMatch[] = [
           level: 4.2,
           category: 'medio',
           hand: 'Derecha',
-          sidePreference: 'Revés',
+          sidePreference: 'Revés', // Juega a la izquierda
           matchesPlayed: 89,
           winRate: 63,
           radarStats: { tecnica: 8, paredes: 7, volea: 8, aereo: 8, tactica: 7 }
@@ -218,7 +221,7 @@ export const INITIAL_MATCHES: OpenMatch[] = [
           level: 3.9,
           category: 'medio',
           hand: 'Derecha',
-          sidePreference: 'Drive',
+          sidePreference: 'Drive', // Juega a la derecha
           matchesPlayed: 65,
           winRate: 55,
           radarStats: { tecnica: 7, paredes: 7, volea: 7, aereo: 7, tactica: 7 }
@@ -227,12 +230,128 @@ export const INITIAL_MATCHES: OpenMatch[] = [
       {
         position: 3,
         team: 'B',
-        player: undefined // PLAZA LIBRE
+        player: undefined // PLAZA LIBRE (Revés)
       },
       {
         position: 4,
         team: 'B',
-        player: undefined // PLAZA LIBRE
+        player: undefined // PLAZA LIBRE (Drive)
+      }
+    ]
+  },
+  {
+    id: 'match-5',
+    courtName: 'Pista 5 — Panorámica WPT',
+    courtType: 'Panorámica Cubierta',
+    date: 'Hoy, 15 Oct',
+    time: '20:30 - 22:00',
+    durationMinutes: 90,
+    pricePerPlayer: 7.0,
+    minLevel: 3.0,
+    maxLevel: 4.2,
+    status: 'open',
+    isCompetitive: false,
+    notes: 'Pista 5 Nave B. Partido de tarde noche relajado.',
+    slots: [
+      {
+        position: 1,
+        team: 'A',
+        player: undefined
+      },
+      {
+        position: 2,
+        team: 'A',
+        player: undefined
+      },
+      {
+        position: 3,
+        team: 'B',
+        player: undefined
+      },
+      {
+        position: 4,
+        team: 'B',
+        player: undefined
+      }
+    ]
+  },
+  {
+    id: 'match-6',
+    courtName: 'Pista 6 — Master Series',
+    courtType: 'Panorámica Cubierta',
+    date: 'Hoy, 15 Oct',
+    time: '19:00 - 20:30',
+    durationMinutes: 90,
+    pricePerPlayer: 7.0,
+    minLevel: 3.0,
+    maxLevel: 4.5,
+    status: 'full',
+    isCompetitive: true,
+    notes: 'Partido completo cerrado de socios.',
+    slots: [
+      {
+        position: 1,
+        team: 'A',
+        player: {
+          id: 'p9',
+          name: 'Raúl Medina',
+          avatar: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&w=300&q=80',
+          level: 3.8,
+          category: 'medio',
+          hand: 'Derecha',
+          sidePreference: 'Revés',
+          matchesPlayed: 44,
+          winRate: 52,
+          radarStats: { tecnica: 7, paredes: 6, volea: 7, aereo: 6, tactica: 7 }
+        }
+      },
+      {
+        position: 2,
+        team: 'A',
+        player: {
+          id: 'p10',
+          name: 'Pablo Herrero',
+          avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=300&q=80',
+          level: 3.6,
+          category: 'medio',
+          hand: 'Derecha',
+          sidePreference: 'Drive',
+          matchesPlayed: 38,
+          winRate: 50,
+          radarStats: { tecnica: 6, paredes: 7, volea: 6, aereo: 6, tactica: 6 }
+        }
+      },
+      {
+        position: 3,
+        team: 'B',
+        player: {
+          id: 'p11',
+          name: 'Elena Costa',
+          avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=300&q=80',
+          level: 4.1,
+          category: 'medio',
+          hand: 'Derecha',
+          sidePreference: 'Revés',
+          matchesPlayed: 55,
+          winRate: 60,
+          radarStats: { tecnica: 8, paredes: 7, volea: 8, aereo: 7, tactica: 7 }
+        }
+      },
+      {
+        position: 4,
+        team: 'B',
+        player: {
+          id: 'p12',
+          name: 'Cristian Soler',
+          avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=300&q=80',
+          level: 3.9,
+          category: 'medio',
+          hand: 'Zurdo',
+          sidePreference: 'Drive',
+          matchesPlayed: 60,
+          winRate: 57,
+          radarStats: { tecnica: 7, paredes: 7, volea: 7, aereo: 7, tactica: 7 }
+        }
       }
     ]
   }

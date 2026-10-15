@@ -3,7 +3,7 @@
 import React from 'react';
 import { ClubTheme, Player } from '../types';
 import { LevelBadge } from './LevelBadge';
-import { ShieldCheck, ChevronDown, User, Sparkles, Building2, Flame, KeyRound, LogIn, Shuffle } from 'lucide-react';
+import { ShieldCheck, ChevronDown, User, Sparkles, Building2, Flame, KeyRound, LogIn, Eye } from 'lucide-react';
 
 interface NavbarProps {
   currentClub: ClubTheme;
@@ -14,8 +14,8 @@ interface NavbarProps {
   onOpenB2B: () => void;
   onOpenAdmin: () => void;
   onOpenOnboarding: () => void;
-  activeTab: 'americana' | 'matches' | 'booking' | 'profile';
-  onTabChange: (tab: 'americana' | 'matches' | 'booking' | 'profile') => void;
+  activeTab: 'aerial' | 'matches' | 'booking' | 'profile';
+  onTabChange: (tab: 'aerial' | 'matches' | 'booking' | 'profile') => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -85,6 +85,25 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
         {/* Navigation Tabs */}
         <nav className="flex items-center gap-1 sm:gap-2">
+          {/* TAB 1: VISIÓN AÉREA DE PISTAS (Destacada) */}
+          <button
+            onClick={() => onTabChange('aerial')}
+            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-black transition flex items-center gap-2 ${
+              activeTab === 'aerial'
+                ? 'bg-yellow-400 text-black shadow-lg shadow-yellow-400/25 ring-2 ring-yellow-300'
+                : 'text-zinc-400 hover:text-yellow-400 hover:bg-zinc-900'
+            }`}
+          >
+            <Eye className="w-4 h-4" />
+            <span>Visión Aérea Pistas</span>
+            <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-tight ${
+              activeTab === 'aerial' ? 'bg-black text-yellow-400' : 'bg-yellow-400 text-black'
+            }`}>
+              6 Pistas
+            </span>
+          </button>
+
+          {/* TAB 2: PARTIDOS ABIERTOS */}
           <button
             onClick={() => onTabChange('matches')}
             className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-black transition flex items-center gap-2 ${
@@ -97,23 +116,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span>Partidos Abiertos</span>
           </button>
 
-          <button
-            onClick={() => onTabChange('americana')}
-            className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-black transition flex items-center gap-2 ${
-              activeTab === 'americana'
-                ? 'bg-yellow-400 text-black shadow-lg shadow-yellow-400/25 ring-2 ring-yellow-300'
-                : 'text-zinc-400 hover:text-yellow-400 hover:bg-zinc-900'
-            }`}
-          >
-            <Shuffle className="w-4 h-4" />
-            <span>Americana Pádel</span>
-            <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-tight ${
-              activeTab === 'americana' ? 'bg-black text-yellow-400' : 'bg-yellow-400 text-black'
-            }`}>
-              6 Pistas
-            </span>
-          </button>
-
+          {/* TAB 3: RESERVAR PISTA */}
           <button
             onClick={() => onTabChange('booking')}
             className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-black transition flex items-center gap-2 ${
@@ -125,6 +128,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span>Reservar Pista</span>
           </button>
 
+          {/* TAB 4: PERFIL (MOBILE) */}
           <button
             onClick={() => onTabChange('profile')}
             className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-2 sm:hidden ${
