@@ -344,108 +344,131 @@ export const AerialClubCourtsView: React.FC<AerialClubCourtsViewProps> = ({
           </div>
         </div>
 
-        {/* NAVE 2 (SALA ANEXA): 4 PISTAS (Pistas 3, 5, 6 Horizontales; Pista 4 VERTICAL) */}
+        {/* NAVE 2 (SALA ANEXA): 4 PISTAS (Pistas 4 y 3 a la izquierda; Pistas 6 y 5 a la derecha) */}
         <div className="lg:col-span-7 space-y-4">
           <div className="flex items-center justify-between px-2">
             <div className="flex items-center gap-2">
               <span className="text-xs font-mono font-bold text-yellow-400 bg-yellow-400/10 px-2.5 py-1 rounded-xl border border-yellow-400/20">
                 NAVE 2 (SALA ANEXA)
               </span>
-              <span className="text-xs text-zinc-400">4 Pistas (Pista 4 Central Vertical)</span>
+              <span className="text-xs text-zinc-400">4 Pistas Horizontales</span>
             </div>
           </div>
 
           <div className="bg-zinc-950 border border-zinc-800/90 rounded-3xl p-4 sm:p-5 shadow-xl">
-            {/* Grid for Nave B: Left column (Pista 3 y 5 Horizontales), Right column (Pista 4 Vertical y Pista 6 Horizontal) */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-stretch">
-              {/* Left Column: Pista 3 & Pista 5 */}
-              <div className="md:col-span-6 space-y-4 flex flex-col justify-between">
-                {/* Pista 3 */}
-                <AerialCourtCanvas
-                  court={naveBCourts[0]}
-                  match={getMatchForCourtAtSlot(3)}
-                  selectedTime={selectedTimeSlot}
-                  selectedDate={selectedDate}
-                  currentUser={currentUser}
-                  isSelected={selectedCourtNumber === 3}
-                  onSelect={() => setSelectedCourtNumber(3)}
-                  onJoinSlot={(pos) => {
-                    const m = getMatchForCourtAtSlot(3);
-                    if (m) onJoinMatchSlot(m.id, pos);
-                    else setBookingModalCourt(naveBCourts[0]);
-                  }}
-                  onLeaveSlot={(pos) => {
-                    const m = getMatchForCourtAtSlot(3);
-                    if (m) onLeaveMatchSlot(m.id, pos);
-                  }}
-                  onOpenBookingModal={() => setBookingModalCourt(naveBCourts[0])}
-                />
+            {/* Grid 2 Columnas para Nave 2:
+                Columna Izquierda: Pista 4 (arriba a la izquierda) y Pista 3 (abajo a la izquierda)
+                Columna Derecha: Pista 6 (arriba a la derecha) y Pista 5 (en el medio a la derecha)
+            */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+              {/* Columna Izquierda: Pista 4 (arriba) y Pista 3 (abajo) */}
+              <div className="space-y-4">
+                {/* Pista 4 (arriba a la izquierda, en el mismo sentido horizontal) */}
+                {(() => {
+                  const c4 = ESPADEL_COURTS.find(c => c.number === 4)!;
+                  return (
+                    <AerialCourtCanvas
+                      court={c4}
+                      match={getMatchForCourtAtSlot(4)}
+                      selectedTime={selectedTimeSlot}
+                      selectedDate={selectedDate}
+                      currentUser={currentUser}
+                      isSelected={selectedCourtNumber === 4}
+                      onSelect={() => setSelectedCourtNumber(4)}
+                      onJoinSlot={(pos) => {
+                        const m = getMatchForCourtAtSlot(4);
+                        if (m) onJoinMatchSlot(m.id, pos);
+                        else setBookingModalCourt(c4);
+                      }}
+                      onLeaveSlot={(pos) => {
+                        const m = getMatchForCourtAtSlot(4);
+                        if (m) onLeaveMatchSlot(m.id, pos);
+                      }}
+                      onOpenBookingModal={() => setBookingModalCourt(c4)}
+                    />
+                  );
+                })()}
 
-                {/* Pista 5 */}
-                <AerialCourtCanvas
-                  court={naveBCourts[2]}
-                  match={getMatchForCourtAtSlot(5)}
-                  selectedTime={selectedTimeSlot}
-                  selectedDate={selectedDate}
-                  currentUser={currentUser}
-                  isSelected={selectedCourtNumber === 5}
-                  onSelect={() => setSelectedCourtNumber(5)}
-                  onJoinSlot={(pos) => {
-                    const m = getMatchForCourtAtSlot(5);
-                    if (m) onJoinMatchSlot(m.id, pos);
-                    else setBookingModalCourt(naveBCourts[2]);
-                  }}
-                  onLeaveSlot={(pos) => {
-                    const m = getMatchForCourtAtSlot(5);
-                    if (m) onLeaveMatchSlot(m.id, pos);
-                  }}
-                  onOpenBookingModal={() => setBookingModalCourt(naveBCourts[2])}
-                />
+                {/* Pista 3 (abajo a la izquierda, en la misma dirección) */}
+                {(() => {
+                  const c3 = ESPADEL_COURTS.find(c => c.number === 3)!;
+                  return (
+                    <AerialCourtCanvas
+                      court={c3}
+                      match={getMatchForCourtAtSlot(3)}
+                      selectedTime={selectedTimeSlot}
+                      selectedDate={selectedDate}
+                      currentUser={currentUser}
+                      isSelected={selectedCourtNumber === 3}
+                      onSelect={() => setSelectedCourtNumber(3)}
+                      onJoinSlot={(pos) => {
+                        const m = getMatchForCourtAtSlot(3);
+                        if (m) onJoinMatchSlot(m.id, pos);
+                        else setBookingModalCourt(c3);
+                      }}
+                      onLeaveSlot={(pos) => {
+                        const m = getMatchForCourtAtSlot(3);
+                        if (m) onLeaveMatchSlot(m.id, pos);
+                      }}
+                      onOpenBookingModal={() => setBookingModalCourt(c3)}
+                    />
+                  );
+                })()}
               </div>
 
-              {/* Right Column: Pista 4 (VERTICAL) & Pista 6 (Horizontal) */}
-              <div className="md:col-span-6 space-y-4 flex flex-col justify-between">
-                {/* Pista 4 (VERTICAL ESPECÍFICA) */}
-                <AerialCourtCanvas
-                  court={naveBCourts[1]} // Pista 4 Vertical
-                  match={getMatchForCourtAtSlot(4)}
-                  selectedTime={selectedTimeSlot}
-                  selectedDate={selectedDate}
-                  currentUser={currentUser}
-                  isSelected={selectedCourtNumber === 4}
-                  onSelect={() => setSelectedCourtNumber(4)}
-                  onJoinSlot={(pos) => {
-                    const m = getMatchForCourtAtSlot(4);
-                    if (m) onJoinMatchSlot(m.id, pos);
-                    else setBookingModalCourt(naveBCourts[1]);
-                  }}
-                  onLeaveSlot={(pos) => {
-                    const m = getMatchForCourtAtSlot(4);
-                    if (m) onLeaveMatchSlot(m.id, pos);
-                  }}
-                  onOpenBookingModal={() => setBookingModalCourt(naveBCourts[1])}
-                />
+              {/* Columna Derecha: Pista 6 (arriba) y Pista 5 (en el medio a la derecha) */}
+              <div className="space-y-4">
+                {/* Pista 6 (arriba a la derecha, en la misma dirección) */}
+                {(() => {
+                  const c6 = ESPADEL_COURTS.find(c => c.number === 6)!;
+                  return (
+                    <AerialCourtCanvas
+                      court={c6}
+                      match={getMatchForCourtAtSlot(6)}
+                      selectedTime={selectedTimeSlot}
+                      selectedDate={selectedDate}
+                      currentUser={currentUser}
+                      isSelected={selectedCourtNumber === 6}
+                      onSelect={() => setSelectedCourtNumber(6)}
+                      onJoinSlot={(pos) => {
+                        const m = getMatchForCourtAtSlot(6);
+                        if (m) onJoinMatchSlot(m.id, pos);
+                        else setBookingModalCourt(c6);
+                      }}
+                      onLeaveSlot={(pos) => {
+                        const m = getMatchForCourtAtSlot(6);
+                        if (m) onLeaveMatchSlot(m.id, pos);
+                      }}
+                      onOpenBookingModal={() => setBookingModalCourt(c6)}
+                    />
+                  );
+                })()}
 
-                {/* Pista 6 */}
-                <AerialCourtCanvas
-                  court={naveBCourts[3]} // Pista 6 Horizontal
-                  match={getMatchForCourtAtSlot(6)}
-                  selectedTime={selectedTimeSlot}
-                  selectedDate={selectedDate}
-                  currentUser={currentUser}
-                  isSelected={selectedCourtNumber === 6}
-                  onSelect={() => setSelectedCourtNumber(6)}
-                  onJoinSlot={(pos) => {
-                    const m = getMatchForCourtAtSlot(6);
-                    if (m) onJoinMatchSlot(m.id, pos);
-                    else setBookingModalCourt(naveBCourts[3]);
-                  }}
-                  onLeaveSlot={(pos) => {
-                    const m = getMatchForCourtAtSlot(6);
-                    if (m) onLeaveMatchSlot(m.id, pos);
-                  }}
-                  onOpenBookingModal={() => setBookingModalCourt(naveBCourts[3])}
-                />
+                {/* Pista 5 (en el medio a la derecha, en la misma dirección) */}
+                {(() => {
+                  const c5 = ESPADEL_COURTS.find(c => c.number === 5)!;
+                  return (
+                    <AerialCourtCanvas
+                      court={c5}
+                      match={getMatchForCourtAtSlot(5)}
+                      selectedTime={selectedTimeSlot}
+                      selectedDate={selectedDate}
+                      currentUser={currentUser}
+                      isSelected={selectedCourtNumber === 5}
+                      onSelect={() => setSelectedCourtNumber(5)}
+                      onJoinSlot={(pos) => {
+                        const m = getMatchForCourtAtSlot(5);
+                        if (m) onJoinMatchSlot(m.id, pos);
+                        else setBookingModalCourt(c5);
+                      }}
+                      onLeaveSlot={(pos) => {
+                        const m = getMatchForCourtAtSlot(5);
+                        if (m) onLeaveMatchSlot(m.id, pos);
+                      }}
+                      onOpenBookingModal={() => setBookingModalCourt(c5)}
+                    />
+                  );
+                })()}
               </div>
             </div>
           </div>
@@ -648,8 +671,6 @@ const AerialCourtCanvas: React.FC<AerialCourtCanvasProps> = ({
   onLeaveSlot,
   onOpenBookingModal,
 }) => {
-  const isVertical = court.orientation === 'vertical';
-
   // Extract slots: 1 (Team A Revés), 2 (Team A Drive), 3 (Team B Revés), 4 (Team B Drive)
   const slot1 = match?.slots.find(s => s.position === 1); // Team A Revés (Left)
   const slot2 = match?.slots.find(s => s.position === 2); // Team A Drive (Right)
@@ -675,11 +696,6 @@ const AerialCourtCanvas: React.FC<AerialCourtCanvasProps> = ({
             {court.number}
           </div>
           <span className="font-bold text-xs text-white truncate">{court.name}</span>
-          {isVertical && (
-            <span className="text-[9px] font-mono uppercase bg-yellow-400/15 text-yellow-400 px-1.5 py-0.2 rounded border border-yellow-400/30">
-              Vertical
-            </span>
-          )}
         </div>
 
         {/* Status Badge */}
@@ -712,9 +728,7 @@ const AerialCourtCanvas: React.FC<AerialCourtCanvasProps> = ({
 
       {/* AERIAL BLUEPRINT (Azul reglamentario WPT) */}
       <div
-        className={`relative w-full rounded-2xl overflow-hidden border-2 border-sky-400/40 shadow-inner flex flex-col justify-center items-center ${
-          isVertical ? 'aspect-[1/1.6] max-h-96' : 'aspect-[2.2/1] min-h-[145px]'
-        }`}
+        className="relative w-full rounded-2xl overflow-hidden border-2 border-sky-400/40 shadow-inner flex flex-col justify-center items-center aspect-[2.2/1] min-h-[145px]"
         style={{
           backgroundColor: '#1d4ed8', // Official Royal Court Blue
           backgroundImage: 'radial-gradient(ellipse at center, #2563eb 0%, #1e40af 100%)'
@@ -724,161 +738,80 @@ const AerialCourtCanvas: React.FC<AerialCourtCanvasProps> = ({
         {/* Outer Court Border Line */}
         <div className="absolute inset-2 border border-white/60 pointer-events-none" />
 
-        {!isVertical ? (
-          /* HORIZONTAL COURT LAYOUT (Lines & Net) */
-          <>
-            {/* Center Net Line (Vertical) */}
-            <div className="absolute top-2 bottom-2 left-1/2 w-1 -translate-x-1/2 bg-white/90 shadow-md flex items-center justify-center pointer-events-none z-10">
-              <span className="text-[8px] font-black uppercase text-zinc-900 bg-white px-0.5 py-0.5 rounded -rotate-90">
-                RED
-              </span>
-            </div>
+        {/* Center Net Line (Vertical) */}
+        <div className="absolute top-2 bottom-2 left-1/2 w-1 -translate-x-1/2 bg-white/90 shadow-md flex items-center justify-center pointer-events-none z-10">
+          <span className="text-[8px] font-black uppercase text-zinc-900 bg-white px-0.5 py-0.5 rounded -rotate-90">
+            RED
+          </span>
+        </div>
 
-            {/* Service Lines Team A (Left Half) */}
-            <div className="absolute top-2 bottom-2 left-[28%] w-px bg-white/40 pointer-events-none" />
-            <div className="absolute left-2 right-[72%] top-1/2 h-px bg-white/40 pointer-events-none" />
+        {/* Service Lines Team A (Left Half) */}
+        <div className="absolute top-2 bottom-2 left-[30%] w-px bg-white/40 pointer-events-none" />
+        <div className="absolute left-[30%] right-1/2 top-1/2 h-px bg-white/40 pointer-events-none" />
 
-            {/* Service Lines Team B (Right Half) */}
-            <div className="absolute top-2 bottom-2 right-[28%] w-px bg-white/40 pointer-events-none" />
-            <div className="absolute left-[72%] right-2 top-1/2 h-px bg-white/40 pointer-events-none" />
+        {/* Service Lines Team B (Right Half) */}
+        <div className="absolute top-2 bottom-2 right-[30%] w-px bg-white/40 pointer-events-none" />
+        <div className="absolute left-1/2 right-[30%] top-1/2 h-px bg-white/40 pointer-events-none" />
 
-            {/* PLAYER CIRCLES PLACEMENT (HORIZ):
-                Strict rule from user:
-                "Si eres derecha, que salga el circulito en la derecha de la pista y si eres revés, en la izquierda de la pista":
-                - Lado izquierdo = Revés
-                - Lado derecho = Derecha (Drive)
-            */}
-            <div className="absolute inset-2 grid grid-cols-2 z-20 pointer-events-auto">
-              {/* Team A Half (Left half of court) */}
-              <div className="grid grid-rows-2 p-2">
-                {/* Spot 1: Revés (Arriba / Izquierda) */}
-                <div className="flex items-start justify-start">
-                  <PlayerCircle
-                    position={1}
-                    side="Revés"
-                    slot={slot1}
-                    currentUser={currentUser}
-                    onJoin={() => onJoinSlot(1)}
-                    onLeave={() => onLeaveSlot(1)}
-                  />
-                </div>
-                {/* Spot 2: Derecha / Drive (Abajo / Derecha) */}
-                <div className="flex items-end justify-end pr-3">
-                  <PlayerCircle
-                    position={2}
-                    side="Drive"
-                    slot={slot2}
-                    currentUser={currentUser}
-                    onJoin={() => onJoinSlot(2)}
-                    onLeave={() => onLeaveSlot(2)}
-                  />
-                </div>
-              </div>
+        {/* PLAYER CIRCLES PLACEMENT (HORIZONAL):
+            Regla usuario: "Quiero que los círculos de jugador de drive y revés estén a la misma altura, a fondo de pista en la mitad.
+            Si eres derecha, que salga el circulito en la derecha de la pista y si eres revés, en la izquierda de la pista".
 
-              {/* Team B Half (Right half of court) */}
-              <div className="grid grid-rows-2 p-2">
-                {/* Spot 4: Derecha / Drive (Arriba / Derecha) */}
-                <div className="flex items-start justify-end">
-                  <PlayerCircle
-                    position={4}
-                    side="Drive"
-                    slot={slot4}
-                    currentUser={currentUser}
-                    onJoin={() => onJoinSlot(4)}
-                    onLeave={() => onLeaveSlot(4)}
-                  />
-                </div>
-                {/* Spot 3: Revés (Abajo / Izquierda) */}
-                <div className="flex items-end justify-start pl-3">
-                  <PlayerCircle
-                    position={3}
-                    side="Revés"
-                    slot={slot3}
-                    currentUser={currentUser}
-                    onJoin={() => onJoinSlot(3)}
-                    onLeave={() => onLeaveSlot(3)}
-                  />
-                </div>
-              </div>
-            </div>
-          </>
-        ) : (
-          /* VERTICAL COURT LAYOUT (PISTA 4 ESPECÍFICA) */
-          <>
-            {/* Center Net Line (Horizontal) */}
-            <div className="absolute left-2 right-2 top-1/2 h-1 -translate-y-1/2 bg-white/90 shadow-md flex items-center justify-center pointer-events-none z-10">
-              <span className="text-[8px] font-black uppercase text-zinc-900 bg-white px-1 py-0.2 rounded">
-                RED
-              </span>
-            </div>
+            - Campo A (Izquierda): Fondo de pista está a la izquierda (w-[28%]).
+              Ambos jugadores están A LA MISMA ALTURA respecto al fondo (centrados en el eje X de fondo de pista).
+              Arriba (Lado izquierdo mirando a red) = Revés (Slot 1)
+              Abajo (Lado derecho mirando a red) = Drive (Slot 2)
 
-            {/* Service Lines Team A (Top Half) */}
-            <div className="absolute left-2 right-2 top-[28%] h-px bg-white/40 pointer-events-none" />
-            <div className="absolute top-2 bottom-[72%] left-1/2 w-px bg-white/40 pointer-events-none" />
+            - Campo B (Derecha): Fondo de pista está a la derecha (w-[28%]).
+              Ambos jugadores están A LA MISMA ALTURA respecto al fondo (centrados en el eje X de fondo de pista).
+              Arriba = Drive (Slot 4)
+              Abajo = Revés (Slot 3)
+        */}
+        <div className="absolute inset-2 z-20 pointer-events-auto">
+          {/* Fondo Campo A (Izquierda): Ambos a la misma altura X en la mitad del fondo */}
+          <div className="absolute top-2 bottom-2 left-1 w-[26%] flex flex-col justify-around items-center">
+            {/* Spot 1: Revés (Arriba / Lado izquierdo) */}
+            <PlayerCircle
+              position={1}
+              side="Revés"
+              slot={slot1}
+              currentUser={currentUser}
+              onJoin={() => onJoinSlot(1)}
+              onLeave={() => onLeaveSlot(1)}
+            />
+            {/* Spot 2: Derecha / Drive (Abajo / Lado derecho) */}
+            <PlayerCircle
+              position={2}
+              side="Drive"
+              slot={slot2}
+              currentUser={currentUser}
+              onJoin={() => onJoinSlot(2)}
+              onLeave={() => onLeaveSlot(2)}
+            />
+          </div>
 
-            {/* Service Lines Team B (Bottom Half) */}
-            <div className="absolute left-2 right-2 bottom-[28%] h-px bg-white/40 pointer-events-none" />
-            <div className="absolute top-[72%] bottom-2 left-1/2 w-px bg-white/40 pointer-events-none" />
-
-            {/* PLAYER CIRCLES PLACEMENT (VERTICAL):
-                Top half (Team A): Left = Revés (Izquierda), Right = Drive (Derecha)
-                Bottom half (Team B): Left = Revés (Izquierda), Right = Drive (Derecha)
-            */}
-            <div className="absolute inset-2 grid grid-rows-2 z-20 pointer-events-auto">
-              {/* Top Half (Team A) */}
-              <div className="grid grid-cols-2 p-2">
-                {/* Slot 1: Revés (Izquierda arriba) */}
-                <div className="flex items-start justify-start">
-                  <PlayerCircle
-                    position={1}
-                    side="Revés"
-                    slot={slot1}
-                    currentUser={currentUser}
-                    onJoin={() => onJoinSlot(1)}
-                    onLeave={() => onLeaveSlot(1)}
-                  />
-                </div>
-                {/* Slot 2: Drive (Derecha arriba) */}
-                <div className="flex items-start justify-end">
-                  <PlayerCircle
-                    position={2}
-                    side="Drive"
-                    slot={slot2}
-                    currentUser={currentUser}
-                    onJoin={() => onJoinSlot(2)}
-                    onLeave={() => onLeaveSlot(2)}
-                  />
-                </div>
-              </div>
-
-              {/* Bottom Half (Team B) */}
-              <div className="grid grid-cols-2 p-2">
-                {/* Slot 3: Revés (Izquierda abajo) */}
-                <div className="flex items-end justify-start">
-                  <PlayerCircle
-                    position={3}
-                    side="Revés"
-                    slot={slot3}
-                    currentUser={currentUser}
-                    onJoin={() => onJoinSlot(3)}
-                    onLeave={() => onLeaveSlot(3)}
-                  />
-                </div>
-                {/* Slot 4: Drive (Derecha abajo) */}
-                <div className="flex items-end justify-end">
-                  <PlayerCircle
-                    position={4}
-                    side="Drive"
-                    slot={slot4}
-                    currentUser={currentUser}
-                    onJoin={() => onJoinSlot(4)}
-                    onLeave={() => onLeaveSlot(4)}
-                  />
-                </div>
-              </div>
-            </div>
-          </>
-        )}
+          {/* Fondo Campo B (Derecha): Ambos a la misma altura X en la mitad del fondo */}
+          <div className="absolute top-2 bottom-2 right-1 w-[26%] flex flex-col justify-around items-center">
+            {/* Spot 4: Derecha / Drive (Arriba / Lado derecho) */}
+            <PlayerCircle
+              position={4}
+              side="Drive"
+              slot={slot4}
+              currentUser={currentUser}
+              onJoin={() => onJoinSlot(4)}
+              onLeave={() => onLeaveSlot(4)}
+            />
+            {/* Spot 3: Revés (Abajo / Lado izquierdo) */}
+            <PlayerCircle
+              position={3}
+              side="Revés"
+              slot={slot3}
+              currentUser={currentUser}
+              onJoin={() => onJoinSlot(3)}
+              onLeave={() => onLeaveSlot(3)}
+            />
+          </div>
+        </div>
       </div>
 
       {/* Court Bottom Footer with Match Info / Action */}
